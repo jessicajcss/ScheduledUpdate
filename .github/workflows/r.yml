@@ -35,6 +35,7 @@ jobs:
       - name: Execute Script
         run: |
           Rscript "./R/00-access-newdata-thermo-git.R"
+        shell: Rscript {0}
 
       - name: Commit results
         run: |
