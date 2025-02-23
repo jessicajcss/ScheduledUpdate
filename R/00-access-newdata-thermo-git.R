@@ -46,16 +46,20 @@ thermo_repos_raw <- httr::GET("https://api.github.com/repos/jessicajcss/Dados_GM
  #dplyr::filter(stringr::str_detect(path,'.lsi')) |>
  #tidyr::separate(path, c('folder','filename'),'/')
 
-thermo_repos <- httr::content(thermo_repos_raw)$tree |>
+thermo_repos2 <- httr::content(thermo_repos_raw)$tree |>
   #purrr::flatten() |>
   purrr::map(unlist, recursive = TRUE)  |>
   purrr::map_dfr(tibble::enframe, .id = "id_repo") |>
   purrr::set_names(
     c("id_repo", "section", "value")
   ) |>
-  as.data.frame() |>
+  as.data.frame()
+
+
+thermo_repos <- thermo_repos2 |>
+  tidyr::pivot_wider() |>
   #tidyr::pivot_wider(names_from = section, values_from = value) |>
-  reshape2::dcast(... ~ section) |>
+  #reshape2::dcast(... ~ section) |>
   dplyr::filter(stringr::str_detect(path,'.lsi')) |>
   tidyr::separate(path, c('folder','filename'),'/')
 
