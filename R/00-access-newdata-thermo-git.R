@@ -26,13 +26,10 @@ thermo_repos_raw <-
        owner = "jessicajcss",
        repo = "Dados_GM_UFPR",
        branch = "main",
-       .token = Sys.getenv("GITHUB_PAT"),
-       .accept = "application/vnd.github.v3.raw")
- )
+       .token = Sys.getenv("GITHUB_PAT")
+ ))
 
 
-
-       
 # transform into a tibble with few cols
 thermo_repos <- thermo_repos_raw[[1]]$tree |>
   #purrr::flatten() |>
