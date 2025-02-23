@@ -12,51 +12,38 @@ print("Hi! Welcome to a GH Actions with R - to create a full datafile each time 
 
 # get information about the repositories on the Quarto organizations.
 
-#thermo_git <- c("GM-RioBranco")
-
-#thermo_repos_raw <-
-  #purrr::map(thermo_git, ~ gh::gh(
-    #"GET /repos/jessicajcss/Dados_GM_UFPR/git/trees/main?recursive=1/",
-    #.token = Sys.getenv("GITHUB_PAT"),
-   # .accept = "application/vnd.github.v3.raw")
- # )
-
-#thermo_repos_raw <-
- # purrr::map(thermo_git, ~ gh::gh("GET /repos/{owner}/{repo}/git/trees/{branch}?recursive=1",
-  #     owner = "jessicajcss",
-   #    repo = "Dados_GM_UFPR",
-    #   branch = "main",
-     #  .token = Sys.getenv("GITHUB_PAT")
-#))
-
-
-
 
 #Extracting the path variable from the output of above request
 thermo_repos_raw <- httr::GET("https://api.github.com/repos/jessicajcss/Dados_GM_UFPR/git/trees/main?recursive=1/",
                               httr::authenticate(Sys.getenv("GITHUB_PAT"), ""),
                               Accept = "application/vnd.github.v3.raw")
 
-# transform into a tibble with few cols
-#thermo_repos <- thermo_repos_raw[[1]]$tree |>
-  ##purrr::flatten() |>
- #purrr::map(unlist, recursive = TRUE)  |>
- #purrr::map_dfr(tibble::enframe, .id = "id_repo") |>
- #tidyr::pivot_wider() |>
- #dplyr::filter(stringr::str_detect(path,'.lsi')) |>
- #tidyr::separate(path, c('folder','filename'),'/')
-
-columns_to_select <- c("id_repo", "name", "value")
 
 thermo_repos0 <- httr::content(thermo_repos_raw)$tree
+
+
 thermo_repos <- thermo_repos0 |>
-  #purrr::flatten() |>
-  purrr::map(unlist, recursive = TRUE)  |>
-  purrr::map_dfr(tibble::enframe, .id = "id_repo") |> # Using purrr::map_dfc to select and bind columns
-  dplyr::select(id_repo, name, value) |>
-  tidyr::pivot_wider() |>
-  subset(stringr::str_detect(path,'.lsi')) |>
-  tidyr::separate(path, c('folder','filename'),'/')
+    purrr::map(unlist, recursive = TRUE) |>
+    purrr::map_dfr(tibble::enframe, .id = "id_repo") # Create the data frame
+
+  # Check the structure of thermo_repos
+print(class(thermo_repos))
+head(thermo_repos)
+
+  # Now apply select to the data frame
+thermo_repos <- thermo_repos |>
+    dplyr::select(id_repo, name, value) |>
+    tidyr::pivot_wider() |>
+    subset(stringr::str_detect(path, '.lsi')) |>
+    tidyr::separate(path, c('folder', 'filename'), '/')
+
+  # Check the resulting data frame
+head(thermo_repos)
+
+
+  # Check column names and data after map_dfr
+colnames(thermo_repos)
+head(thermo_repos)
 
 
 
