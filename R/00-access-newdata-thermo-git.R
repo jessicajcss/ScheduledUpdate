@@ -57,7 +57,7 @@ thermo_repos2 <- httr::content(thermo_repos_raw)$tree |>
 
 
 thermo_repos <- thermo_repos2 |>
-  tidyr::pivot_wider() |>
+  tidyr::pivot_wider(names_from = section) |>
   #tidyr::pivot_wider(names_from = section, values_from = value) |>
   #reshape2::dcast(... ~ section) |>
   dplyr::filter(stringr::str_detect(path,'.lsi')) |>
