@@ -12,7 +12,7 @@ print("Hi! Welcome to a GH Actions with R - to create a full datafile each time 
 
 # get information about the repositories on the Quarto organizations.
 
-thermo_git <- c("GM-RioBranco")
+#thermo_git <- c("GM-RioBranco")
 
 #thermo_repos_raw <-
   #purrr::map(thermo_git, ~ gh::gh(
@@ -21,24 +21,38 @@ thermo_git <- c("GM-RioBranco")
    # .accept = "application/vnd.github.v3.raw")
  # )
 
-thermo_repos_raw <-
-  purrr::map(thermo_git, ~ gh::gh("GET /repos/{owner}/{repo}/git/trees/{branch}?recursive=1",
-       owner = "jessicajcss",
-       repo = "Dados_GM_UFPR",
-       branch = "main",
-       .token = Sys.getenv("GITHUB_PAT")
- ))
+#thermo_repos_raw <-
+ # purrr::map(thermo_git, ~ gh::gh("GET /repos/{owner}/{repo}/git/trees/{branch}?recursive=1",
+  #     owner = "jessicajcss",
+   #    repo = "Dados_GM_UFPR",
+    #   branch = "main",
+     #  .token = Sys.getenv("GITHUB_PAT")
+#))
 
+
+
+
+#Extracting the path variable from the output of above request
+thermo_repos_raw <- httr::GET("https://api.github.com/repos/jessicajcss/Dados_GM_UFPR/git/trees/main?recursive=1/",
+                              httr::authenticate(Sys.getenv("GITHUB_PAT"), ""),
+                              Accept = "application/vnd.github.v3.raw")
 
 # transform into a tibble with few cols
-thermo_repos <- thermo_repos_raw[[1]]$tree |>
+#thermo_repos <- thermo_repos_raw[[1]]$tree |>
+  ##purrr::flatten() |>
+ #purrr::map(unlist, recursive = TRUE)  |>
+ #purrr::map_dfr(tibble::enframe, .id = "id_repo") |>
+ #tidyr::pivot_wider() |>
+ #dplyr::filter(stringr::str_detect(path,'.lsi')) |>
+ #tidyr::separate(path, c('folder','filename'),'/')
+
+thermo_repos <- httr::content(thermo_repos_raw)$tree |>
   #purrr::flatten() |>
   purrr::map(unlist, recursive = TRUE)  |>
   purrr::map_dfr(tibble::enframe, .id = "id_repo") |>
   tidyr::pivot_wider() |>
   dplyr::filter(stringr::str_detect(path,'.lsi')) |>
   tidyr::separate(path, c('folder','filename'),'/')
-
 
 
 
@@ -50,7 +64,7 @@ file_path_new <- url |>
 # Updating only data since the last download ---
 
 result <- thermo_repos |>
-  dplyr::anti_join(file_path_new, by = "url")
+  dplyr::anti_join(file_path, by = "url")
 
 
 # paths to save unique url from files already downloaded to exclude them from the next loop
