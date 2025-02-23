@@ -36,17 +36,17 @@ thermo_repos <- thermo_repos_raw[[1]]$tree |>
 
 load("./data_raw/file_path.Rda") # data previously downloaded
 
+url <- thermo_repos$url
+file_path_new <- url |>
+  as.data.frame()
 # Updating only data since the last download ---
 
 result <- thermo_repos |>
-  dplyr::anti_join(file_path, by = "url")
+  dplyr::anti_join(file_path_new, by = "url")
+
 
 # paths to save unique url from files already downloaded to exclude them from the next loop
-url <- thermo_repos$url
-file_path <- url |>
-  as.data.frame()
-
-save(file_path, file="./data_raw/file_path.Rda")
+file_path <- file_path_new
 
 #Looping and save file to local
 ##We`ll loop through all the paths and request the data by generating url for each file, converting datatype of all columns to character and appending all files to a consolidated one.
@@ -99,7 +99,7 @@ colnames(data_git) <- c('Cidade','date','SO2', 'NO2', 'O3', 'CO', 'PM2.5','PM10'
 
 # Loading previou full dataset
 
-load("./data/data_thermo.Rda")
+load("./data/data_thermo_update.Rda")
 
 data_thermo <- rbind(data_thermo, data_git) |>
   unique() |>
@@ -114,4 +114,5 @@ data_thermo <- rbind(data_thermo, data_git) |>
 # saving output dados até [22-02-2025 24h]
 save(data_thermo, file="./data/data_thermo_update.Rda")
 
+save(file_path, file="./data_raw/file_path.Rda")
 
