@@ -46,22 +46,16 @@ thermo_repos_raw <- httr::GET("https://api.github.com/repos/jessicajcss/Dados_GM
  #dplyr::filter(stringr::str_detect(path,'.lsi')) |>
  #tidyr::separate(path, c('folder','filename'),'/')
 
-thermo_repos2 <- httr::content(thermo_repos_raw)$tree |>
+columns_to_select <- c("id_repo", "name", "value")
+
+thermo_repos0 <- httr::content(thermo_repos_raw)$tree
+thermo_repos2 <- thermo_repos0 |>
   #purrr::flatten() |>
   purrr::map(unlist, recursive = TRUE)  |>
-  purrr::map_dfr(tibble::enframe, .id = "id_repo") |>
-  as.data.frame() |>
-  dplyr::select(1, 2, 3) |>
-  purrr::set_names(
-    c("id_repo", "section", "value")
-  )
-
-
-thermo_repos <- thermo_repos2 |>
-  tidyr::pivot_wider(names_from = section) |>
-  #tidyr::pivot_wider(names_from = section, values_from = value) |>
-  #reshape2::dcast(... ~ section) |>
-  dplyr::filter(stringr::str_detect(path,'.lsi')) |>
+  purrr::map_dfr(tibble::enframe, .id = "id_repo") |> # Using purrr::map_dfc to select and bind columns
+  dplyr::select(id_repo, name, value) |>
+  tidyr::pivot_wider() |>
+  subset(stringr::str_detect(path,'.lsi')) |>
   tidyr::separate(path, c('folder','filename'),'/')
 
 
