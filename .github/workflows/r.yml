@@ -32,7 +32,7 @@ jobs:
 
       - name: Execute Script
         run: |
-          Rscript "00-access-newdata-thermo-git.R"
+          Rscript "./R/00-access-newdata-thermo-git.R"
 
       - name: Commit results
         run: |

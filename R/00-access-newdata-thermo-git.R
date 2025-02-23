@@ -1,6 +1,7 @@
 # GHA YAML: https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions
 # https://beamilz.com/posts/series-gha/2022-series-gha-2-creating-your-first-action/en/
 
+#usethis::use_github_action("check-release")
 
 
 print("Hi! Welcome to a GH Actions with R - to create a full datafile each time a new insitu dataset is uploaded in the folder :)")
@@ -46,7 +47,6 @@ file_path <- url |>
   as.data.frame()
 
 save(file_path, file="./data_raw/file_path.Rda")
-
 
 #Looping and save file to local
 ##We`ll loop through all the paths and request the data by generating url for each file, converting datatype of all columns to character and appending all files to a consolidated one.

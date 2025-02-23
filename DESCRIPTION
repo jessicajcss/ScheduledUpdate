@@ -1,11 +1,28 @@
-Package: ScheduledUpdate
-Title: What the Package Does (One Line, Title Case)
+
+Package: packagename
+Title: Running R Scripts on a Schedule with GitHub Actions
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+    person(given = "Jessica",
+           family = "Santos-Silva",
+           role = c("aut", "cre"),
+           email = "jessica.jcss@gmail.com")
+Description: Contains an example repository for running R scripts on a schedule
+    and commiting their results. 
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
+Imports:
+    gh
+    dplyr
+    tidyr
+    readr
+    knitr
+    httr
+    purrr
+    stringr
+    lubridate
+    tidyverse
+    
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
