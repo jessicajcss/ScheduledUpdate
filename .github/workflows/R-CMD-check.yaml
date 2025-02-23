@@ -22,6 +22,10 @@ jobs:
         with:
           use-public-rspm: true
 
+      - name: Install pak
+        run: Rscript -e
+        'install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")'
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck

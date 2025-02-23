@@ -2,7 +2,7 @@
 # https://beamilz.com/posts/series-gha/2022-series-gha-2-creating-your-first-action/en/
 
 #usethis::use_github_action("check-release")
-
+#install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
 
 print("Hi! Welcome to a GH Actions with R - to create a full datafile each time a new insitu dataset is uploaded in the folder :)")
 
