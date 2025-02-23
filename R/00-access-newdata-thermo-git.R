@@ -24,24 +24,31 @@ thermo_repos0 <- httr::content(thermo_repos_raw)$tree
 
 thermo_repos <- thermo_repos0 |>
     purrr::map(unlist, recursive = TRUE) |>
-    purrr::map_dfr(tibble::enframe, .id = "id_repo") # Create the data frame
-
+    purrr::map_dfr(tibble::enframe, .id = "id_repo") |> # Create the data frame
+    as.data.frame()
   # Check the structure of thermo_repos
 print(class(thermo_repos))
+str(thermo_repos)
 head(thermo_repos)
+print(colnames(thermo_repos))
 
-  # Now apply select to the data frame
-thermo_repos <- thermo_repos |>
-    dplyr::select(id_repo, name, value) |>
-    tidyr::pivot_wider() |>
+#columns_to_select <- paste0("c(", colnames(thermo_repos[1]), ", ",
+ #                           colnames(thermo_repos[2]), ", ",
+  #                          colnames(thermo_repos[3]), ")")
+
+# Now apply select to the data frame
+thermo_repos <- thermo_repos[, c(1:3)] |>
+    #dplyr::select(columns_to_select) |>
+    tidyr::pivot_wider(
+      names_from = paste(colnames(thermo_repos[2])),
+      values_from = paste(colnames(thermo_repos[3]))
+    ) |>
     subset(stringr::str_detect(path, '.lsi')) |>
     tidyr::separate(path, c('folder', 'filename'), '/')
 
   # Check the resulting data frame
-head(thermo_repos)
 
-
-  # Check column names and data after map_dfr
+# Check column names and data after map_dfr
 colnames(thermo_repos)
 head(thermo_repos)
 
