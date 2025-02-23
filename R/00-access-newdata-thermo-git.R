@@ -51,10 +51,8 @@ thermo_repos <- httr::content(thermo_repos_raw)$tree |>
   purrr::map(unlist, recursive = TRUE)  |>
   purrr::map_dfr(tibble::enframe, .id = "id_repo") |>
   as.data.frame() |>
-  tidyr::pivot_wider(
-    names_from = name,
-    values_from = value
-  ) |>
+  #tidyr::pivot_wider(names_from = name, values_from = value) |>
+  reshape2::dcast(... ~name, value.var = "value") |>
   dplyr::filter(stringr::str_detect(path,'.lsi')) |>
   tidyr::separate(path, c('folder','filename'),'/')
 
@@ -100,7 +98,6 @@ output <- dplyr::bind_rows(out) |>
   dplyr::distinct() # combine the output into a single data frame
 
 
-
 # Preparando o banco de dados
 data_git <- output |>
   tidyr::separate(col = value,
@@ -141,4 +138,5 @@ data_thermo <- rbind(data_thermo, data_git) |>
 save(data_thermo, file="./data/data_thermo_update.Rda")
 
 save(file_path, file="./data_raw/file_path.Rda")
+
 
