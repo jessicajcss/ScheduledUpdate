@@ -2,9 +2,9 @@
 
 name: run_job_2
 
-on:
+on: push
   schedule:
-    - cron: '0 9 * * *'
+    - cron:   "*/15 * * * *"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
