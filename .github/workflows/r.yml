@@ -33,8 +33,9 @@ jobs:
             any::reshape2
 
       - name: Execute Script
-        run: |
-         source ("./R/00-access-newdata-thermo-git.R")
+        #run: |
+         run: Rscript -e 'source("./R/00-access-newdata-thermo-git.R")'
+        #source("./R/00-access-newdata-thermo-git.R")
         #Rscript "./R/00-access-newdata-thermo-git.R"
         shell: Rscript {0}
 
