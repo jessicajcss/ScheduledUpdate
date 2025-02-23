@@ -55,7 +55,6 @@ thermo_repos <- httr::content(thermo_repos_raw)$tree |>
     names_from = name,
     values_from = value
   ) |>
-  reshape2::dcast(, value.var = "value") |>
   dplyr::filter(stringr::str_detect(path,'.lsi')) |>
   tidyr::separate(path, c('folder','filename'),'/')
 
