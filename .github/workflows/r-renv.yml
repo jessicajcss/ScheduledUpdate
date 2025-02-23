@@ -34,7 +34,7 @@ jobs:
         with:
           r-version: ${{ matrix.r-version }}
       # install renv package
-      - run: R -ErrorAction 'install.packages("renv")'
+      - run: R 'install.packages("renv")'
       # set up cache
       - name: Cache packages
         uses: actions/cache@v1
