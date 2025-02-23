@@ -54,7 +54,7 @@ thermo_repos <- httr::content(thermo_repos_raw)$tree |>
     c("id_repo", "section", "value")
   ) |>
   as.data.frame() |>
-  tidyr::pivot_wider(names_from = section, values_from = value) |>
+  tidyr::pivot_wider(names_from = 'section', values_from = 'value') |>
   #reshape2::dcast(... ~section) |>
   dplyr::filter(stringr::str_detect(path,'.lsi')) |>
   tidyr::separate(path, c('folder','filename'),'/')
