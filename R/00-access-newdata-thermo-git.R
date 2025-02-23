@@ -51,6 +51,7 @@ thermo_repos2 <- httr::content(thermo_repos_raw)$tree |>
   purrr::map(unlist, recursive = TRUE)  |>
   purrr::map_dfr(tibble::enframe, .id = "id_repo") |>
   as.data.frame() |>
+  dplyr::select(id_repo, name, value) |>
   purrr::set_names(
     c("id_repo", "section", "value")
   )
