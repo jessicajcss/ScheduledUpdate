@@ -47,9 +47,7 @@ jobs:
       # execute Rscript
       - name: Execute Script
         run: |
-         Rscript /R/00-access-newdata-thermo-git.R
-        #source("./R/00-access-newdata-thermo-git.R")
-        #Rscript "./R/00-access-newdata-thermo-git.R"
+          Rscript "R/00-access-newdata-thermo-git.R"
         shell: Rscript {0}
 
       - name: Commit results
