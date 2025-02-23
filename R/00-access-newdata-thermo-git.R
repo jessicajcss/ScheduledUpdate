@@ -14,14 +14,25 @@ print("Hi! Welcome to a GH Actions with R - to create a full datafile each time 
 
 thermo_git <- c("GM-RioBranco")
 
+#thermo_repos_raw <-
+  #purrr::map(thermo_git, ~ gh::gh(
+    #"GET /repos/jessicajcss/Dados_GM_UFPR/git/trees/main?recursive=1/",
+    #.token = Sys.getenv("GITHUB_PAT"),
+   # .accept = "application/vnd.github.v3.raw")
+ # )
+
 thermo_repos_raw <-
-  purrr::map(thermo_git, ~ gh::gh(
-    "GET /repos/jessicajcss/Dados_GM_UFPR/git/trees/main?recursive=1/",
-    .token = Sys.getenv("GITHUB_PAT"),
-    .accept = "application/vnd.github.v3.raw")
-  )
+  purrr::map(thermo_git, ~ gh::gh("GET /repos/{owner}/{repo}/git/trees/{branch}?recursive=1",
+       owner = "jessicajcss",
+       repo = "Dados_GM_UFPR",
+       branch = "main",
+       .token = Sys.getenv("GITHUB_PAT"),
+       .accept = "application/vnd.github.v3.raw")
+ )
 
 
+
+       
 # transform into a tibble with few cols
 thermo_repos <- thermo_repos_raw[[1]]$tree |>
   #purrr::flatten() |>
