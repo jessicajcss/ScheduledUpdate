@@ -21,6 +21,27 @@ thermo_repos_raw <- httr::GET("https://api.github.com/repos/jessicajcss/Dados_GM
 
 thermo_repos0 <- httr::content(thermo_repos_raw)$tree
 
+
+thermo_repos <- thermo_repos0 |>
+  purrr::map(unlist, recursive = TRUE) |>
+  purrr::map_dfr(function(x) {
+    tibble::enframe(x, name = "name", value = "value")
+  }, .id = "id_repo")  |>
+  #dplyr::arrange(dplyr::desc(name)) |>
+  tidyr::pivot_wider(names_from = name, values_from = value) |>
+  subset(stringr::str_detect(path, '.lsi')) |>
+  tidyr::separate(path, c('folder', 'filename'), '/') |>
+  as.data.frame()
+
+# Check the structure of thermo_repos
+print(class(thermo_repos))
+str(thermo_repos)
+head(thermo_repos)
+print(colnames(thermo_repos))
+
+
+
+
 # Check the resulting data frame
 
 # Check column names and data after map_dfr
