@@ -9,7 +9,9 @@ jobs:
   run-r-script:
     runs-on: ubuntu-latest
     env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+      #GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v3
       - uses: r-lib/actions/setup-r@v2
