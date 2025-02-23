@@ -1,0 +1,59 @@
+# This is a basic workflow that only runs on schedule
+
+name: run_job_2
+
+on:
+  schedule:
+    - cron: '0 9 * * *'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job
+  run_thingy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    # retrieve secrets from github
+    env:
+        apikey: ${{ secrets.APIKEY}}
+        apisecretkey: ${{ secrets.APISECRETKEY}}
+        access_token: ${{ secrets.ACCESS_TOKEN}}
+        access_token_secret: ${{ secrets.ACCESS_TOKEN_SECRET}}
+        GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+        RENV_PATHS_ROOT: ~/.local/share/renv
+    #
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - name: setup-r
+        uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: '4.0.2'
+      # install renv package
+      - run: R -e 'install.packages("renv")'
+      # set up cache
+      - name: Cache packages
+        uses: actions/cache@v1
+        with:
+           path: ${{ env.RENV_PATHS_ROOT }}
+           key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+           restore-keys: |-
+              ${{ runner.os }}-renv-
+      - run: sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev
+      # install c++ dependencies and install necessary packages
+      - run: R -e 'renv::restore()'
+      # execute Rscript
+      - name: Execute Script
+        run: |
+         Rscript -e 'source("./R/00-access-newdata-thermo-git.R")'
+        #source("./R/00-access-newdata-thermo-git.R")
+        #Rscript "./R/00-access-newdata-thermo-git.R"
+        shell: Rscript {0}
+
+      - name: Commit results
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add .
+          git commit -m "Results from R script" || echo "No changes to commit"
+          git push origin || echo "No changes to commit"-
