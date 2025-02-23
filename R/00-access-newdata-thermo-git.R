@@ -52,7 +52,7 @@ thermo_repos <- httr::content(thermo_repos_raw)$tree |>
   purrr::map_dfr(tibble::enframe, .id = "id_repo") |>
   as.data.frame() |>
   #tidyr::pivot_wider(names_from = name, values_from = value) |>
-  reshape2::dcast(... ~name, value.var = "value") |>
+  reshape2::dcast(... ~name) |>
   dplyr::filter(stringr::str_detect(path,'.lsi')) |>
   tidyr::separate(path, c('folder','filename'),'/')
 
