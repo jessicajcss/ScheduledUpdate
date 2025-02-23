@@ -1,6 +1,6 @@
 on:
-  schedule:
-    - cron:  "*/15 * * * *"
+  #schedule:
+  #  - cron:  "*/15 * * * *"
   workflow_dispatch:
 
 name: 01-rscript
@@ -30,6 +30,7 @@ jobs:
             any::stringr
             any::lubridate
             any::tidyverse
+            any::reshape2
 
       - name: Execute Script
         run: |
