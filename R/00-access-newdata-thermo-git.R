@@ -26,18 +26,19 @@ thermo_repos <- thermo_repos0 |>
   purrr::map(unlist, recursive = TRUE) |>
   purrr::map_dfr(function(x) {
     tibble::enframe(x, name = "name", value = "value")
-  }, .id = "id_repo")  |>
-  #dplyr::arrange(dplyr::desc(name)) |>
-  tidyr::pivot_wider(names_from = name, values_from = value) |>
+  }, .id = "id_repo")
+
+str(thermo_repos)
+
+thermo_repos <- (function(x)data.frame(new=x))(thermo_repos) |>
+  as.data.frame()
+
+thermo_repos <- thermo_repos |>
+  tidyr::pivot_wider(names_from = new.name, values_from = new.value) |>
   subset(stringr::str_detect(path, '.lsi')) |>
   tidyr::separate(path, c('folder', 'filename'), '/') |>
   as.data.frame()
 
-# Check the structure of thermo_repos
-print(class(thermo_repos))
-str(thermo_repos)
-head(thermo_repos)
-print(colnames(thermo_repos))
 
 
 
@@ -45,6 +46,9 @@ print(colnames(thermo_repos))
 # Check the resulting data frame
 
 # Check column names and data after map_dfr
+print(class(thermo_repos))
+str(thermo_repos)
+print(colnames(thermo_repos))
 colnames(thermo_repos)
 head(thermo_repos)
 
