@@ -1,11 +1,11 @@
 # This is a basic workflow that only runs on schedule
 
-name: run_job_repo_file
+name: run_job_2
 
 on:
   push:
       branches: [ "main" ]
-  #schedule:
+  schedule:
   #  - cron:   "*/15 * * * *"
   workflow_dispatch:
 
@@ -37,7 +37,7 @@ jobs:
       - uses: r-lib/actions/setup-renv@v2
 
       - name: Cache packages
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
            path: ${{ env.RENV_PATHS_ROOT }}
            key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
@@ -45,11 +45,10 @@ jobs:
               ${{ runner.os }}-renv-
            fail-on-cache-miss: true
 
-
       # execute Rscript
       - name: Execute Script
         run: |
-          source("R/00-access-REPOnewdata-thermo-git.R")
+          source("R/00-access-newdata-thermo-git.R")
         shell: Rscript {0}
 
       - name: Commit results
@@ -57,5 +56,5 @@ jobs:
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add .
-          git commit -m "Results from R script run" || echo "No changes to commit"
+          git commit -m "Results from R script" || echo "No changes to commit"
           git push origin || echo "No changes to commit"-
