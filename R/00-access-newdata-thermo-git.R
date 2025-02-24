@@ -26,16 +26,15 @@ thermo_repos <- thermo_repos0 |>
   purrr::map(unlist, recursive = TRUE) |>
   purrr::map_dfr(function(x) {
     tibble::enframe(x, name = "name", value = "value")
-  }, .id = "id_repo")
+  }, .id = "id_repo") |>
+  as.data.frame()
 
 
 readr::write_csv(thermo_repos, "./data_raw/thermo_repos.csv")
 thermo_repos <- readr::read_csv("./data_raw/thermo_repos.csv")
 
-
 #thermo_repos <- (function(x)data.frame(new=x))(thermo_repos) |>
  # as.data.frame()
-
 
 # Check column names and data after map_dfr
 print(class(thermo_repos))
