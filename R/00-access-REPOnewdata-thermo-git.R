@@ -24,14 +24,22 @@ thermo_repos0 <- httr::content(thermo_repos_raw)$tree
 
 print(thermo_repos0)
 
-thermo_repos <- thermo_repos0 |>
+thermo_repos1 <- thermo_repos0 |>
   purrr::map(unlist, recursive = TRUE) |>
   purrr::map_dfr(function(x) {
     tibble::enframe(x, name = "name", value = "value")
   }, .id = "id_repo") |>
   as.data.frame()
 
+print(thermo_repos1)
+
+
+thermo_repos <- data.frame('id_repo' = thermo_repos1$id_repo,
+                           'name' = thermo_repos1$name,
+                           'value' = thermo_repos1$value)
+
 print(thermo_repos)
+class(thermo_repos)
+
 
 readr::write_csv(thermo_repos, "./data_raw/thermo_repos.csv")
-#thermo_repos <- readr::read_csv("./data_raw/thermo_repos.csv")
