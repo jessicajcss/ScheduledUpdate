@@ -15,8 +15,6 @@ print("Hi! Welcome to a GH Actions with R - to create a full datafile each time 
 
 #Extracting the path variable from the output of above request
 # Set your GitHub Personal Access Token (GitPAT) as an environment variable (replace with your token)
-Sys.setenv(GITHUB_PAT = "your_github_pat_here")
-
 # Define repositories to fetch (replace with your list of repositories)
 quarto_orgs <- c("Dados_GM_UFPR")  # Replace with actual repo names
 

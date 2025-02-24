@@ -43,6 +43,8 @@ jobs:
            key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
            restore-keys: |-
               ${{ runner.os }}-renv-
+        fail-on-cache-miss: true
+
 
       # execute Rscript
       - name: Execute Script
