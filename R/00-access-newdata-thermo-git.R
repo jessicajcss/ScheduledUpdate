@@ -18,9 +18,11 @@ thermo_repos_raw <- httr::GET("https://api.github.com/repos/jessicajcss/Dados_GM
                               httr::authenticate(Sys.getenv("GITHUB_PAT"), ""),
                               Accept = "application/vnd.github.v3.raw")
 
+print(thermo_repos_raw)
 
 thermo_repos0 <- httr::content(thermo_repos_raw)$tree
 
+print(thermo_repos0)
 
 thermo_repos <- thermo_repos0 |>
   purrr::map(unlist, recursive = TRUE) |>
@@ -29,6 +31,7 @@ thermo_repos <- thermo_repos0 |>
   }, .id = "id_repo") |>
   as.data.frame()
 
+print(thermo_repos)
 
 readr::write_csv(thermo_repos, "./data_raw/thermo_repos.csv")
 #thermo_repos <- readr::read_csv("./data_raw/thermo_repos.csv")
@@ -37,6 +40,7 @@ thermo_repos <- readr::read_csv(url("https://raw.githubusercontent.com/jessicajc
 
 #thermo_repos <- (function(x)data.frame(new=x))(thermo_repos) |>
  # as.data.frame()
+print(thermo_repos0)
 
 # Check column names and data after map_dfr
 print(class(thermo_repos))
