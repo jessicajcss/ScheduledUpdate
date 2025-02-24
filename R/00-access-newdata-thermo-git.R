@@ -31,7 +31,9 @@ thermo_repos <- thermo_repos0 |>
 
 
 readr::write_csv(thermo_repos, "./data_raw/thermo_repos.csv")
-thermo_repos <- readr::read_csv("./data_raw/thermo_repos.csv")
+#thermo_repos <- readr::read_csv("./data_raw/thermo_repos.csv")
+
+thermo_repos <- readr::read_csv(url("https://raw.githubusercontent.com/jessicajcss/ScheduledUpdate/refs/heads/main/data_raw/thermo_repos.csv"))
 
 #thermo_repos <- (function(x)data.frame(new=x))(thermo_repos) |>
  # as.data.frame()
