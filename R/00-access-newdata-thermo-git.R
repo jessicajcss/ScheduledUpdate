@@ -46,10 +46,12 @@ colnames(thermo_repos)
 head(thermo_repos)
 
 thermo_repos <- thermo_repos |>
-  tidyr::pivot_wider() |>
-  subset(stringr::str_detect(path, '.lsi')) |>
-  tidyr::separate(path, c('folder', 'filename'), '/') |>
-  as.data.frame()
+  tidyr::pivot_wider(
+    names_from = name,
+    values_from = value
+  ) |>
+  subset(stringr::str_detect(value, '.lsi')) |>
+  tidyr::separate(path, c('folder', 'filename'), '/')
 
 
 
