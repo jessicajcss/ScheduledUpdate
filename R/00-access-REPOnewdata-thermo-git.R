@@ -31,13 +31,32 @@ thermo_repos_raw <- purrr::map(quarto_orgs, function(repo) {
   )
 })
 
-# Print the result
+# Check if any responses were NULL
+cat("Checking for NULL responses...\n")
+if (any(sapply(thermo_repos_raw, is.null))) {
+  cat("Some responses were NULL\n")
+} else {
+  cat("No NULL responses\n")
+}
+
+# Print the raw responses
 print(thermo_repos_raw)
 
+# Extract the tree elements
 thermo_repos0 <- purrr::map(thermo_repos_raw, ~ .x$tree)
 
+# Check for NULL trees
+cat("Checking for NULL trees...\n")
+if (any(sapply(thermo_repos0, is.null))) {
+  cat("Some trees were NULL\n")
+} else {
+  cat("No NULL trees\n")
+}
+
+# Print the extracted trees
 print(thermo_repos0)
 
+# Further processing
 thermo_repos1 <- thermo_repos0 |>
   purrr::map(unlist, recursive = TRUE) |>
   purrr::map_dfr(function(x) {
@@ -45,13 +64,17 @@ thermo_repos1 <- thermo_repos0 |>
   }, .id = "id_repo") |>
   as.data.frame()
 
+# Print the processed data
 print(thermo_repos1)
 
 thermo_repos <- data.frame('id_repo' = thermo_repos1$id_repo,
                            'name' = thermo_repos1$name,
                            'value' = thermo_repos1$value)
 
+# Print the final data
 print(thermo_repos)
-class(thermo_repos)
+cat("Class of thermo_repos:", class(thermo_repos), "\n")
 
+# Write to CSV
 readr::write_csv(thermo_repos, "./data_raw/thermo_repos.csv")
+cat("CSV file written to ./data_raw/thermo_repos.csv\n")
