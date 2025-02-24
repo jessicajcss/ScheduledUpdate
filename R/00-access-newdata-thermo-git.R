@@ -29,11 +29,13 @@ thermo_repos <- thermo_repos0 |>
   }, .id = "id_repo")
 
 
-utils::write.csv(thermo_repos, "./data_raw/thermo_repos.csv",
-                 row.names = F)
-thermo_repos <- utils::read.csv("./data_raw/thermo_repos.csv")
+save(thermo_repos, file="./data_raw/thermo_repos.Rda")
+load("./data_raw/thermo_repos.Rda")
 
 str(thermo_repos)
+is.data.frame(thermo_repos)
+colnames(thermo_repos)
+print(colnames(thermo_repos))
 
 
 thermo_repos <- thermo_repos |>
@@ -52,7 +54,6 @@ thermo_repos <- thermo_repos |>
 print(class(thermo_repos))
 str(thermo_repos)
 print(colnames(thermo_repos))
-colnames(thermo_repos)
 head(thermo_repos)
 
 
