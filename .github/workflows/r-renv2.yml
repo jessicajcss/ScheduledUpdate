@@ -1,0 +1,60 @@
+# This is a basic workflow that only runs on schedule
+
+name: run_job_2
+
+on:
+  push:
+      branches: [ "main" ]
+  schedule:
+    - cron:   "*/15 * * * *"
+  workflow_dispatch:
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job
+  run_thingy:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+    # retrieve secrets from github
+    env:
+        apikey: ${{ secrets.APIKEY}}
+        apisecretkey: ${{ secrets.APISECRETKEY}}
+        access_token: ${{ secrets.ACCESS_TOKEN}}
+        access_token_secret: ${{ secrets.ACCESS_TOKEN_SECRET}}
+        GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+        RENV_PATHS_ROOT: ~/.local/share/renv
+    #
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+          r-version: renv
+
+      - uses: r-lib/actions/setup-renv@v2
+
+      - name: Cache packages
+        uses: actions/cache@v1
+        with:
+           path: ${{ env.RENV_PATHS_ROOT }}
+           key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+           restore-keys: |-
+              ${{ runner.os }}-renv-
+
+      # execute Rscript
+      - name: Execute Script
+        run: |
+          source("R/
+          00-access-REPOnewdata-thermo-git.R")
+        shell: Rscript {0}
+
+      - name: Commit results
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add .
+          git commit -m "Results from R script" || echo "No changes to commit"
+          git push origin || echo "No changes to commit"-
