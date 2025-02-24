@@ -29,14 +29,20 @@ thermo_repos <- thermo_repos0 |>
   }, .id = "id_repo")
 
 
-save(thermo_repos, file="./data_raw/thermo_repos.Rda")
-load("./data_raw/thermo_repos.Rda")
+readr::write_csv(thermo_repos, "./data_raw/thermo_repos.csv")
+thermo_repos <- readr::read_csv("./data_raw/thermo_repos.csv")
 
+
+#thermo_repos <- (function(x)data.frame(new=x))(thermo_repos) |>
+ # as.data.frame()
+
+
+# Check column names and data after map_dfr
+print(class(thermo_repos))
 str(thermo_repos)
-is.data.frame(thermo_repos)
-colnames(thermo_repos)
 print(colnames(thermo_repos))
-
+colnames(thermo_repos)
+head(thermo_repos)
 
 thermo_repos <- thermo_repos |>
   tidyr::pivot_wider() |>
@@ -49,12 +55,6 @@ thermo_repos <- thermo_repos |>
 
 
 # Check the resulting data frame
-
-# Check column names and data after map_dfr
-print(class(thermo_repos))
-str(thermo_repos)
-print(colnames(thermo_repos))
-head(thermo_repos)
 
 
 
