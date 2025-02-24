@@ -5,7 +5,7 @@ name: run_job_repo
 on:
   push:
       branches: [ "main" ]
-  schedule:
+  #schedule:
   #  - cron:   "*/15 * * * *"
   workflow_dispatch:
 
