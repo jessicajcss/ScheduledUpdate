@@ -28,13 +28,16 @@ thermo_repos <- thermo_repos0 |>
     tibble::enframe(x, name = "name", value = "value")
   }, .id = "id_repo")
 
+
+utils::write.csv(thermo_repos, "./data_raw/thermo_repos.csv",
+                 row.names = F)
+thermo_repos <- utils::read.csv("./data_raw/thermo_repos.csv")
+
 str(thermo_repos)
 
-thermo_repos <- (function(x)data.frame(new=x))(thermo_repos) |>
-  as.data.frame()
 
 thermo_repos <- thermo_repos |>
-  tidyr::pivot_wider(names_from = new.name, values_from = new.value) |>
+  tidyr::pivot_wider() |>
   subset(stringr::str_detect(path, '.lsi')) |>
   tidyr::separate(path, c('folder', 'filename'), '/') |>
   as.data.frame()

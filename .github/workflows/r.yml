@@ -31,6 +31,7 @@ jobs:
             any::lubridate
             any::tidyverse
             any::reshape2
+            any::utils
 
       - name: Execute Script
         run: |
