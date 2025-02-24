@@ -1,6 +1,6 @@
 # This is a basic workflow that only runs on schedule
 
-name: run_job_repo
+name: run_job_repo_file
 
 on:
   push:
