@@ -1,0 +1,42 @@
+name: Run R Script
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-r-script:
+    runs-on: ubuntu-latest  # You can choose another OS if needed (e.g., windows-latest)
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up R
+      uses: r-lib/actions/setup-r@v2
+      with:
+        r-version: '4.3'  # You can adjust the version of R as needed
+
+    - name: Install dependencies
+      run: |
+        install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
+        pak::pkg_install(c("httr", "purrr", "tibble", "readr", "dplyr", "tidyr", "stringr"))
+
+    - name: Run R script
+      run: |
+        Rscript R/00-access-newdata-thermo-git.R  # Replace with the actual filename of your script, e.g., 'script.R'
+      env:
+        GITHUB_PAT: ${{ secrets.GITHUB_PAT }}  # You can store your GitHub token here for authentication
+
+    - name: Commit and push data (optional)
+      if: success()  # This step will only run if the script succeeds
+      run: |
+        git config --global user.name "Your Name"
+        git config --global user.email "you@example.com"
+        git add .
+        git commit -m "Update data from latest script run"
+        git push
