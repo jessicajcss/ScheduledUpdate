@@ -21,10 +21,21 @@ jobs:
       with:
         r-version: '4.3'  # You can adjust the version of R as needed
 
-    - name: Install dependencies
-      run: |
-        install.packages("pak", repos = "https://r-lib.github.io/p/pak/dev/")
-        pak::pkg_install(c("httr", "purrr", "tibble", "readr", "dplyr", "tidyr", "stringr"))
+    - uses: r-lib/actions/setup-r-dependencies@v2
+      with:
+        packages: |
+          any::gh
+          any::dplyr
+          any::tidyr
+          any::readr
+          any::knitr
+          any::httr
+          any::purrr
+          any::stringr
+          any::lubridate
+          any::tidyverse
+          any::reshape2
+          any::utils
 
     - name: Run R script
       run: |
