@@ -2,12 +2,12 @@
 quarto_orgs <- c("Dados_GM_UFPR")  # Replace with actual repo names
 
 # Function to fetch the trees for each repository
-get_repo_trees <- function(repo_name) {
+get_repo_trees <- function(repo_name, owner) {
   # GitHub API endpoint to get the repository's tree
   cat("Fetching tree for repo:", repo_name, "\n")
   response <- gh::gh(
     "GET /repos/{owner}/{repo}/git/trees/{tree_sha}",
-    owner = "jessicajcss",  # Replace with the owner of the repository
+    owner = owner,  # Replace with the owner of the repository
     repo = repo_name,
     tree_sha = "main",  # Replace with the tree SHA you want to retrieve, e.g., 'main' or a specific SHA
     .token = Sys.getenv("GITHUB_PAT")  # Use the GitHub PAT from the environment
@@ -20,7 +20,7 @@ get_repo_trees <- function(repo_name) {
 thermo_repos_raw <- purrr::map(quarto_orgs, function(repo) {
   tryCatch(
     {
-      response <- get_repo_trees(repo)
+      response <- get_repo_trees(repo, "jessicajcss")  # Replace "jessicajcss" with the correct owner if different
       cat("Successfully fetched tree for repo:", repo, "\n")
       return(response)
     },
