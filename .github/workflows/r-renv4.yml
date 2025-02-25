@@ -1,6 +1,6 @@
 # This is a basic workflow that only runs on schedule
 
-name: run_job_scripts_data_wrangling
+name: run_job_scripts_repodata_wrangling
 
 on:
   push:
@@ -44,6 +44,12 @@ jobs:
            restore-keys: |-
               ${{ runner.os }}-renv-
            fail-on-cache-miss: true
+
+      # execute Rscript
+      - name: Execute Script
+        run: |
+          source("R/00-access-REPOnewdata-thermo-git.R")
+        shell: Rscript {0}
 
       # execute Rscript
       - name: Execute Script
