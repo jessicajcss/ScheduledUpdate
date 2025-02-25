@@ -1,6 +1,6 @@
 # This is a basic workflow that only runs on schedule
 
-name: run_job_repo_file
+name: run_job_scripts_data_wrangling
 
 on:
   push:
