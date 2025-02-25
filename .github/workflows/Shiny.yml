@@ -1,12 +1,12 @@
 name: Deploy to shinyapps.io
 on:
 
-  # run on any push 
+  # run on any push
   #push:
 
   # run on request (via button in actions menu)
   workflow_dispatch:
-      
+
 jobs:
   deploy:
     name: Deploy to shinyapps
@@ -22,6 +22,7 @@ jobs:
           # account and application name (https://<accountName>.shinyapps.io/<appName>)
           appName: dados
           accountName: rmcqualidadedoar
+          appFolder: shiny
           appFiles: app.R, www
 
           # token and secret obtained from https://www.shinyapps.io/admin/#/tokens
