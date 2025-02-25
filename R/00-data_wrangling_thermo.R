@@ -42,6 +42,10 @@ library(dplyr)
 #source("./scripts/00-preprocessing_thermo_GitHub_data.R")
 load(url("https://github.com/jessicajcss/ScheduledUpdate/raw/refs/heads/main/data/data_thermo_update.Rda"))
 #load("./data/data_thermo_update.Rda")
+
+
+
+
 ### Dealing with outliers
 #### https://www.geeksforgeeks.org/how-to-remove-outliers-from-multiple-columns-in-r-dataframe/
 
@@ -100,6 +104,17 @@ data_thermo <- data_thermo %>%
   dplyr::group_by(Cidade) %>%
   remove_outlier(., c('SO2', 'NO2', 'O3', 'CO', 'PM2.5','PM10'))
 
+
+data_thermo_instantaneo <- data_thermo %>%
+  # UNIT CONVERSION: https://www.breeze-technologies.de/blog/air-pollution-how-to-convert-between-mgm3-%C2%B5gm3-ppm-ppb/
+  mutate(CO = CO*1.15, #from ppm to mg/m³
+         O3 = O3*1.96, #from ppb to ug/m³
+         NO2 = NO2*1.88, #from ppb to ug/m³
+         SO2 = SO2*2.62, #from ppb to ug/m³
+         PM2.5 = PM2.5, # ug/m³
+         PM10 = PM10) #ug/m³
+
+save(data_thermo_instantaneo, file="./data/data_thermo_instantaneo_ugm3.Rda")
 
 
 
