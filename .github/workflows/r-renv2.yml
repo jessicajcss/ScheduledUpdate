@@ -3,10 +3,10 @@
 name: run_job_repo_file
 
 on:
-  push:
-      branches: [ "main" ]
-  schedule:
-    - cron:   "*/15 * * * *"
+  #push:
+    #  branches: [ "main" ]
+#  schedule:
+    #- cron:   "*/15 * * * *"
   workflow_dispatch:
 
 
