@@ -49,8 +49,6 @@ jobs:
       - name: Execute Script
         run: |
           source("R/00-access-REPOnewdata-thermo-git.R")
-        with:
-          GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
         shell: Rscript {0}
 
       - name: Commit results
