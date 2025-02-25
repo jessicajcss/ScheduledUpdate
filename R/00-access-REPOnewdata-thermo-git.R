@@ -1,6 +1,6 @@
 # Define repositories to fetch (replace with your list of repositories)
 quarto_orgs <- c("Dados_GM_UFPR")  # Replace with actual repo names
-
+#gh::gh_whoami()
 # Function to fetch the trees for each repository
 get_repo_trees <- function(repo_name) {
   # GitHub API endpoint to get the repository's tree
@@ -10,8 +10,9 @@ get_repo_trees <- function(repo_name) {
     owner = "jessicajcss",  # Replace with the owner of the repository
     repo = repo_name,
     tree_sha = "main",  # Replace with the tree SHA you want to retrieve, e.g., 'main' or a specific SHA
-    .token = Sys.getenv("GITHUB_PAT")  # Use the GitHub PAT from the environment
-  )
+    .token = Sys.getenv("GITHUB_PAT"),  # Use the GitHub PAT from the environment
+    recursive = F
+    )
   cat("Response received for repo:", repo_name, "\n")
   return(response)
 }
