@@ -41,7 +41,7 @@ library(dplyr)
 
 #source("./scripts/00-preprocessing_thermo_GitHub_data.R")
 load(url("https://github.com/jessicajcss/ScheduledUpdate/raw/refs/heads/main/data/data_thermo_update.Rda"))
-
+#load("./data/data_thermo_update.Rda")
 ### Dealing with outliers
 #### https://www.geeksforgeeks.org/how-to-remove-outliers-from-multiple-columns-in-r-dataframe/
 
