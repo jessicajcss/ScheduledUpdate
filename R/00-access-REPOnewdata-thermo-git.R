@@ -1,29 +1,41 @@
 # Define repositories to fetch (replace with your list of repositories)
-thermo_git <- c("Dados_GM_UFPR")  # Replace with actual repo names
+quarto_orgs <- c("Dados_GM_UFPR")  # Replace with actual repo names
 
 # Function to fetch the trees for each repository
-#thermo_git <- c("GM-RioBranco")
-
-github_pat <- Sys.getenv("GITHUB_PAT")
-
-
-thermo_repos_raw <- purrr::map(thermo_git, ~ gh::gh(
-    endpoint = "GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1/",
+get_repo_trees <- function(repo_name) {
+  # GitHub API endpoint to get the repository's tree
+  cat("Fetching tree for repo:", repo_name, "\n")
+  response <- gh::gh(
+    "GET /repos/{owner}/{repo}/git/trees/{tree_sha}",
     owner = "jessicajcss",  # Replace with the owner of the repository
-    repo = "Dados_GM_UFPR",
+    repo = repo_name,
     tree_sha = "main",  # Replace with the tree SHA you want to retrieve, e.g., 'main' or a specific SHA
-    .token = GITHUB_PAT,  # Use the GitHub PAT from the environment
-    .accept = "application/vnd.github.v3.raw"
-  ))
+    .token = Sys.getenv("GITHUB_PAT")  # Use the GitHub PAT from the environment
+  )
+  cat("Response received for repo:", repo_name, "\n")
+  return(response)
+}
 
-
-print(thermo_repos_raw)
-
-thermo_repos0 <- thermo_repos_raw[[1]]$tree
-
-
+# Iterate over all repositories and fetch the trees
+thermo_repos_raw <- purrr::map(quarto_orgs, function(repo) {
+  tryCatch(
+    {
+      response <- get_repo_trees(repo)
+      cat("Successfully fetched tree for repo:", repo, "\n")
+      return(response)
+    },
+    error = function(e) {
+      cat("Error fetching tree for repo:", repo, "\n", "Error message:", e$message, "\n")
+      return(NULL)
+    }
+  )
+})
 
 # Print the result
+print(thermo_repos_raw)
+
+thermo_repos0 <- purrr::map(thermo_repos_raw, ~ .x$tree)
+
 print(thermo_repos0)
 
 thermo_repos1 <- thermo_repos0 |>
@@ -42,4 +54,4 @@ thermo_repos <- data.frame('id_repo' = thermo_repos1$id_repo,
 print(thermo_repos)
 class(thermo_repos)
 
-readr::write_csv(thermo_repos, "./data_raw/thermo_repos.csv")
+
