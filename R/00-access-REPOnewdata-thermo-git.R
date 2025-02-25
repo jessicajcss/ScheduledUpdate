@@ -4,12 +4,15 @@ thermo_git <- c("Dados_GM_UFPR")  # Replace with actual repo names
 # Function to fetch the trees for each repository
 #thermo_git <- c("GM-RioBranco")
 
+github_pat <- Sys.getenv("GITHUB_PAT")
+
+
 thermo_repos_raw <- purrr::map(thermo_git, ~ gh::gh(
     endpoint = "GET /repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1/",
     owner = "jessicajcss",  # Replace with the owner of the repository
     repo = "Dados_GM_UFPR",
     tree_sha = "main",  # Replace with the tree SHA you want to retrieve, e.g., 'main' or a specific SHA
-    .token = Sys.getenv("GITHUB_PAT"),  # Use the GitHub PAT from the environment
+    .token = GITHUB_PAT,  # Use the GitHub PAT from the environment
     .accept = "application/vnd.github.v3.raw"
   ))
 
