@@ -8,14 +8,17 @@ get_repo_trees <- function(repo_name) {
     endpoint = "GET /repos/{owner}/{repo}/git/trees/{tree_sha}",
     owner = "jessicajcss",  # Replace with the owner of the repository
     repo = repo_name,
-    tree_sha = "main",  # Replace with the tree SHA you want to retrieve, e.g., 'main' or a specific SHA
-    .token = Sys.getenv("GITHUB_PAT"),  # Use the GitHub PAT from the environment
-    headers = list('X-GitHub-Api-Version' = '2022-11-28')
+    tree_sha = "main?recursive=1",  # Replace with the tree SHA you want to retrieve, e.g., 'main' or a specific SHA
+    .accept = "application/vnd.github.v3.raw",
+    .token = Sys.getenv("GITHUB_PAT")  # Use the GitHub PAT from the environment
   )
 }
 
 # Iterate over all repositories and fetch the trees
-thermo_repos_raw <- purrr::map(quarto_orgs, get_repo_trees)
+thermo_repos_raw <- purrr::map(quarto_orgs, function(repo) {
+  response <- get_repo_trees(repo)
+  httr::content(response)
+})
 
 # Print the result
 print(thermo_repos_raw)
