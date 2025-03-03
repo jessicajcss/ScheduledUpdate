@@ -6,7 +6,7 @@ on:
   push:
       branches: [ "main" ]
   schedule:
-    - cron:   "*/10 * * * *"
+    - cron:   "*/5 * * * *"
   workflow_dispatch:
 
 
@@ -37,7 +37,7 @@ jobs:
       - uses: r-lib/actions/setup-renv@v2
 
       - name: Cache packages
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
            path: ${{ env.RENV_PATHS_ROOT }}
            key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
