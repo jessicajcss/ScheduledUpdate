@@ -23,15 +23,17 @@ temp <- list.files(path = "./data_raw/sensores_thermo",
 
 
 # aplicar leitura das planilhas contidas na listagem temp
-dir <- "./data/sensores_thermo"
+dir <- "./data_raw/sensores_thermo"
 temp.qualified <- paste(dir, temp, sep = "/")
 myfiles <- lapply(temp.qualified,
                   readr::read_delim,
                   col_select = c(1:21))
-
+colnames(myfiles[[1]]) == colnames(myfiles[[4]])
+colnames(myfiles[[4]]) <- colnames(myfiles[[1]])
 
 # unificar planilhas de dados
 data_thermo_new <- do.call("rbind", myfiles)
+colnames(data_thermo_insitu) <- colnames(data_thermo_new)
 data_thermo <- rbind(data_thermo_insitu, data_thermo_new[, c(1:21)]) |>
   unique()
 
@@ -49,6 +51,8 @@ data_thermo_insitu <- data_thermo |>
   dplyr::select(Cidade, date, so2, no2, o3, co, pm2p5, pm10,  rh)
 
 colnames(data_thermo_insitu) <- c('Cidade','date','SO2', 'NO2', 'O3', 'CO', 'PM2.5','PM10', 'rh_sensor')
+
+
 
 # Saving
 save(data_thermo_insitu, file = "./data_raw/wrangled_data_insitu_thermo.Rda")
@@ -177,6 +181,7 @@ save(file_path, file="./data_raw/file_path.Rda")
 #################################################################
 ########## UNIFICANDO BANCOS DE DADOS 'BASE' IN SITU & GIT
 
+#load(file="./data/data_thermo_update.Rda")
 
-data_thermo <- rbind(data_thermo_insitu, data_git_base) |> unique()
+data_thermo <- rbind(data_thermo_insitu, data_thermo) |> unique()
 save(data_thermo, file="./data_raw/data_thermo.Rda")

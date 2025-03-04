@@ -1,7 +1,7 @@
 
-Package: packagename
+Package: ScheduleUpdate
 Title: Running R Scripts on a Schedule with GitHub Actions
-Version: 0.0.0.9000
+Version: 1.0
 Authors@R: 
     person(given = "Jessica",
            family = "Santos-Silva",
