@@ -239,6 +239,8 @@ aqiFromO3 <- function(gas) {
 
 load("./data/dataaggfinal.Rda")
 load("./data/air_quality_data_ugm3.Rda")
+
+
 #  --------------------------------------------------------------------------------------------------------
 #                                              AQI Determination
 #  --------------------------------------------------------------------------------------------------------
@@ -285,6 +287,8 @@ air_quality_data <- dataaggfinal %>%
   #mutate_if(function(x) all(x < 0), function(x) NA)  %>%
   dplyr::mutate(AQI = pmax(AQI_SO2, AQI_NO2, AQI_O3, AQI_CO, AQI_PM25, AQI_PM10, na.rm = T),
          AQI_Qualidade = AQI_Qualidade(AQI))
+
+
 
 save(air_quality_data, file="./data/air_quality_data.Rda")
 
