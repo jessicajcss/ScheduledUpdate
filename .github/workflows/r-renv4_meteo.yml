@@ -50,7 +50,7 @@ jobs:
       # execute Rscript
       - name: Execute Script
         run: |
-          source("R/C:/Users/jessi/OneDrive/Post-Doc/Publicacoes/Git/ScheduledUpdate/R/00-access-plugfield-data.R")
+          source("R/00-access-plugfield-data.R")
         shell: Rscript {0}
 
       - name: Commit results
