@@ -44,8 +44,6 @@ load(url("https://github.com/jessicajcss/ScheduledUpdate/raw/refs/heads/main/dat
 #load("./data/data_thermo_update.Rda")
 
 
-
-
 ### Dealing with outliers
 #### https://www.geeksforgeeks.org/how-to-remove-outliers-from-multiple-columns-in-r-dataframe/
 
@@ -94,6 +92,9 @@ remove_outlier <- function(dataframe, columns = names(dataframe)) {
 
 data_thermo <- data_thermo %>%
   mutate(date = force_tz(date, tz = "America/Sao_Paulo"))
+
+
+
 
 ### WORKING THERMO DATA ----
 
@@ -154,7 +155,6 @@ dataagg <- data_thermo %>%
   unique()
 
 
-
 # Now fill up missing datetimes with NA
 a <- seq(min(dataagg$date, na.rm = T),
          max(dataagg$date, na.rm = T), by=paste(h,"hours"))
@@ -171,7 +171,10 @@ tdf3 <- rbind(tdf, tdf2) %>%
 
 tz(dataagg$date)
 
+
 dataaggfinal <- merge(dataagg, tdf3, by = c("Cidade", "date"), all.y = T)
+
+
 
 rm(tdf, tdf2, tdf3)
 
@@ -229,6 +232,9 @@ dataaggfinal[, c(3:9)] <- data.frame(sapply(dataaggfinal[, c(3:9)],
 
 
 save(dataaggfinal, file="./data/dataaggfinal.Rda")
+library(tidyverse)
+
+## testar aqui pq aparece AMT 03/03 após calculos com data_thermo
 
 #################### TO COMPARE WITH WHO, 2021 AQG
 
@@ -246,3 +252,4 @@ data_thermo_agg <- dataaggfinal %>%
 
 air_quality_data_ugm3 <- data_thermo_agg
 save(air_quality_data_ugm3, file="./data/air_quality_data_ugm3.Rda")
+
