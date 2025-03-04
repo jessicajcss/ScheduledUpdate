@@ -25,6 +25,7 @@ jobs:
         GITHUB_PAT: ${{ secrets.MY_GITHUB_PAT }}
         PLUG_API: ${{ secrets.PLUG_API }}
         PLUG_AUTH: ${{ secrets.PLUG_AUTH }}
+        PURPLEAIR_API: ${{ secrets.purpleair }}
         RENV_PATHS_ROOT: ~/.local/share/renv
     #
     steps:
