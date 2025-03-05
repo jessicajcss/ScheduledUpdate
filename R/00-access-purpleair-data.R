@@ -248,5 +248,5 @@ load(file = "./data/data_purpleair.Rda")
 
 #unifying datasets
 
-data_purpleair <- rbind(data_purpleair, data_purpleair_new)
+data_purpleair <- rbind(data_purpleair, data_purpleair_new) %>% unique()
 save(data_purpleair, file = "./data/data_purpleair.Rda")
