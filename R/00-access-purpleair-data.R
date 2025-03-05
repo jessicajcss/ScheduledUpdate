@@ -239,8 +239,10 @@ data_purpleair <- data_purpleair %>%
   unique() %>%
   replace(is.na(.), -999) %>% #WORKING AROUND NA VALUES
   dplyr::rowwise() %>%
-  dplyr::mutate(AQI_Qualidade = aqiFromPM25(PM2.5))  %>%
+  dplyr::mutate(AQI_PM2.5 = aqiFromPM25(PM2.5),
+                AQI_Qualidade = AQI_Qualidade(AQI_PM2.5))  %>%
   mutate_all(~ ifelse(. < 0, NA, .))
+
 
 
 save(data_purpleair, file = "./data/data_purpleair.Rda")
