@@ -4,7 +4,7 @@
 
 
 source("R/00-getPurpleairApiHistory.R")
-purpleair_api <- Sys.getenv("PURPLEAIR_API")
+purpleair_api <- "6842E278-8078-11ED-B6F4-42010A800007"#Sys.getenv("PURPLEAIR_API")
 
 
 
@@ -27,7 +27,7 @@ variaveis <- c("latitude, longitude, humidity, temperature,
 todos_purpleair <- getPurpleairApiHistory(
   sensorIndex    = sensor_id,
   apiReadKey     = purpleair_api, #https://develop.purpleair.com/keys ### AJUSTA AQUI
-  startTimeStamp = Sys.time() - 60*86400, ### AJUSTA AQUI
+  startTimeStamp = Sys.time() - 86400, ### AJUSTA AQUI
   endTimeStamp   = Sys.time(), ### AJUSTA AQUI
   average        = "0", ### em tempo real
   fields         = variaveis)
@@ -240,7 +240,7 @@ data_purpleair_new <- data_purpleair %>%
   replace(is.na(.), -999) %>% #WORKING AROUND NA VALUES
   dplyr::rowwise() %>%
   dplyr::mutate(AQI_PM2.5 = aqiFromPM25(PM2.5),
-                AQI_Qualidade = if_else(!is.na(AQI_PM2.5), AQI_Qualidade(AQI_PM2.5), NA))  %>%
+                AQI_Qualidade = ifelse(!is.na(AQI_PM2.5), AQI_Qualidade(AQI_PM2.5), NA))  %>%
   mutate_all(~ ifelse(. < 0, NA, .))
 
 
