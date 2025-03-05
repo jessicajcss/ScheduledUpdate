@@ -27,7 +27,7 @@ variaveis <- c("latitude, longitude, humidity, temperature,
 todos_purpleair <- getPurpleairApiHistory(
   sensorIndex    = sensor_id,
   apiReadKey     = purpleair_api, #https://develop.purpleair.com/keys ### AJUSTA AQUI
-  startTimeStamp = Sys.time() - 86400, ### AJUSTA AQUI
+  startTimeStamp = Sys.time() - 30*86400, ### AJUSTA AQUI
   endTimeStamp   = Sys.time(), ### AJUSTA AQUI
   average        = "0", ### em tempo real
   fields         = variaveis)
@@ -229,7 +229,7 @@ aqiFromPM25 <- function(pm) {
 
 # Matching thermo data X legislation
 
-data_purpleair <- data_purpleair %>%
+data_purpleair_new <- data_purpleair %>%
   select(Cidade, Tipo, sensor_id, date, PM2.5) %>%
   dplyr::mutate(sample_day = as.Date(date, format = "%Y-%m-%d", , tz = "America/Sao_Paulo")) %>%
   select(-date) %>%
@@ -244,5 +244,9 @@ data_purpleair <- data_purpleair %>%
   mutate_all(~ ifelse(. < 0, NA, .))
 
 
+load(file = "./data/data_purpleair.Rda")
 
+#unifying datasets
+
+data_purpleair <- rbind(data_purpleair, data_purpleair_new)
 save(data_purpleair, file = "./data/data_purpleair.Rda")

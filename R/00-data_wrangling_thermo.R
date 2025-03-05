@@ -169,7 +169,7 @@ tdf3 <- rbind(tdf, tdf2) %>%
   mutate(date = force_tz(date, tz = "America/Sao_Paulo"),
          date = as_datetime(date),
          Cidade = as.factor(Cidade)) %>%
-  as.tibble()
+  as_tibble()
 
 
 view(dataaggfinal)
