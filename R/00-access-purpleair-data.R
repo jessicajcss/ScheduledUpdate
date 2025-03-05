@@ -27,7 +27,7 @@ variaveis <- c("latitude, longitude, humidity, temperature,
 todos_purpleair <- getPurpleairApiHistory(
   sensorIndex    = sensor_id,
   apiReadKey     = purpleair_api, #https://develop.purpleair.com/keys ### AJUSTA AQUI
-  startTimeStamp = Sys.time() - 30*86400, ### AJUSTA AQUI
+  startTimeStamp = Sys.time() - 86400, ### AJUSTA AQUI
   endTimeStamp   = Sys.time(), ### AJUSTA AQUI
   average        = "0", ### em tempo real
   fields         = variaveis)
