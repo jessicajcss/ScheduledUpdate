@@ -27,7 +27,7 @@ variaveis <- c("latitude, longitude, humidity, temperature,
 todos_purpleair <- getPurpleairApiHistory(
   sensorIndex    = sensor_id,
   apiReadKey     = purpleair_api, #https://develop.purpleair.com/keys ### AJUSTA AQUI
-  startTimeStamp = Sys.time() - 60*86400, ### AJUSTA AQUI
+  startTimeStamp = Sys.time() - 86400, ### AJUSTA AQUI
   endTimeStamp   = Sys.time(), ### AJUSTA AQUI
   average        = "0", ### em tempo real
   fields         = variaveis)
@@ -44,10 +44,10 @@ summary(todos_purpleair)
 purpleair <- todos_purpleair %>%
   mutate(a_b = pm2.5_cf_1_a/pm2.5_cf_1_b,
          pm2.5_cf = ifelse((is.na(a_b) & is.na(pm2.5_cf_1_b)), pm2.5_cf_1_a,
-                    ifelse((is.na(a_b) & is.na(pm2.5_cf_1_a)), pm2.5_cf_1_b,
-                    ifelse((a_b > 1.1 | a_b < 0.9) & (pm2.5_cf_1_a > pm2.5_cf_1_b), pm2.5_cf_1_b,
-                    ifelse((a_b > 1.1 | a_b < 0.9) & (pm2.5_cf_1_b > pm2.5_cf_1_a), pm2.5_cf_1_a,
-                           pm2.5_cf_1)))),
+                           ifelse((is.na(a_b) & is.na(pm2.5_cf_1_a)), pm2.5_cf_1_b,
+                                  ifelse((a_b > 1.1 | a_b < 0.9) & (pm2.5_cf_1_a > pm2.5_cf_1_b), pm2.5_cf_1_b,
+                                         ifelse((a_b > 1.1 | a_b < 0.9) & (pm2.5_cf_1_b > pm2.5_cf_1_a), pm2.5_cf_1_a,
+                                                pm2.5_cf_1)))),
          PM2.5 = 0.524*pm2.5_cf - 0.0862*humidity + 5.75,
          temperature = (temperature - 32) * 5/9)
 
@@ -110,24 +110,24 @@ data_purpleair <- purpleair %>%
                             sensor_id == "175451" ~ "Itaperuçú",
                             TRUE ~ sensor_id),
          Tipo = case_when(sensor_id == '91267' ~ "outdoor",
-                               sensor_id == '99667' ~ "outdoor",
-                               sensor_id == "175095" ~ "outdoor",
-                               sensor_id == '175099' ~ "outdoor",
-                               sensor_id == '175101' ~ "outdoor",
-                               sensor_id == '175103' ~ "outdoor",
-                               sensor_id == '175109' ~ "outdoor",
-                               sensor_id == '175115' ~ "outdoor",
-                               sensor_id == '175121' ~ "outdoor",
-                               sensor_id == '175123' ~ "outdoor",
-                               sensor_id == '175395' ~ "outdoor",
-                               sensor_id == '175235' ~ "outdoor",
-                               sensor_id == '175387' ~ "outdoor",
-                               sensor_id == '175393' ~ "outdoor",
-                               sensor_id == '175385' ~ "outdoor",
-                               sensor_id == "175403" ~ "outdoor",
-                               sensor_id == "175407" ~ "outdoor",
-                               sensor_id == "175451" ~ "outdoor",
-                               TRUE ~ NA),
+                          sensor_id == '99667' ~ "outdoor",
+                          sensor_id == "175095" ~ "outdoor",
+                          sensor_id == '175099' ~ "outdoor",
+                          sensor_id == '175101' ~ "outdoor",
+                          sensor_id == '175103' ~ "outdoor",
+                          sensor_id == '175109' ~ "outdoor",
+                          sensor_id == '175115' ~ "outdoor",
+                          sensor_id == '175121' ~ "outdoor",
+                          sensor_id == '175123' ~ "outdoor",
+                          sensor_id == '175395' ~ "outdoor",
+                          sensor_id == '175235' ~ "outdoor",
+                          sensor_id == '175387' ~ "outdoor",
+                          sensor_id == '175393' ~ "outdoor",
+                          sensor_id == '175385' ~ "outdoor",
+                          sensor_id == "175403" ~ "outdoor",
+                          sensor_id == "175407" ~ "outdoor",
+                          sensor_id == "175451" ~ "outdoor",
+                          TRUE ~ NA),
          sensor_id = case_when(sensor_id == '91267' ~ "Dona Suzana",
                                sensor_id == '99667' ~ "Escola Hans",
                                sensor_id == "175095" ~ "Prefeitura",
@@ -240,7 +240,7 @@ data_purpleair_new <- data_purpleair %>%
   replace(is.na(.), -999) %>% #WORKING AROUND NA VALUES
   dplyr::rowwise() %>%
   dplyr::mutate(AQI_PM2.5 = aqiFromPM25(PM2.5),
-                AQI_Qualidade = AQI_Qualidade(AQI_PM2.5))  %>%
+                AQI_Qualidade = if_else(!is.na(AQI_PM2.5), AQI_Qualidade(AQI_PM2.5), NA))  %>%
   mutate_all(~ ifelse(. < 0, NA, .))
 
 
