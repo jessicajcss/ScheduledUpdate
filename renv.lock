@@ -691,6 +691,13 @@
       ],
       "Hash": "81d371a9cc60640e74e4ab6ac46dcedc"
     },
+    "httpcode": {
+      "Package": "httpcode",
+      "Version": "0.3.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "13641a1c6d2cc98801b76764078e17ea"
+    },
     "httr": {
       "Package": "httr",
       "Version": "1.4.7",

@@ -243,4 +243,4 @@ data_purpleair <- data_purpleair %>%
   mutate_all(~ ifelse(. < 0, NA, .))
 
 
-save(data_purpleair, file = "data/data_purpleair.Rda")
+save(data_purpleair, file = "./data/data_purpleair.Rda")
