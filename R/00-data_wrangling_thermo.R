@@ -1,6 +1,6 @@
 #* DATA WRANGLING *#
 #* Local: R_Analysis/Post_Doc >> /script  ||  /data/data_input
-#* Date: 14/04/2024, Last update: 2025-02-18
+#* Date: 14/04/2024, Last update: 2025-03-05
 #* By: Jéssica C. dos Santos-Silva
 
 
@@ -42,7 +42,6 @@ library(dplyr)
 #source("./scripts/00-preprocessing_thermo_GitHub_data.R")
 load(url("https://github.com/jessicajcss/ScheduledUpdate/raw/refs/heads/main/data/data_thermo_update.Rda"))
 #load("./data/data_thermo_update.Rda")
-
 
 ### Dealing with outliers
 #### https://www.geeksforgeeks.org/how-to-remove-outliers-from-multiple-columns-in-r-dataframe/
@@ -167,18 +166,18 @@ tdf2 <- tdf %>%
   mutate(Cidade = "Almirante Tamandaré")
 
 tdf3 <- rbind(tdf, tdf2) %>%
-  mutate(date = force_tz(date, tz = "America/Sao_Paulo"))
+  mutate(date = force_tz(date, tz = "America/Sao_Paulo"),
+         date = as_datetime(date),
+         Cidade = as.factor(Cidade)) %>%
+  as.tibble()
 
-tz(dataagg$date)
 
-
-dataaggfinal <- merge(dataagg, tdf3, by = c("Cidade", "date"), all.y = T)
-
+view(dataaggfinal)
+dataaggfinal <- merge(dataagg, tdf3, by = c("Cidade", "date"), all = T)
 
 
 rm(tdf, tdf2, tdf3)
 
-tz(dataaggfinal$date)
 # days with missing values
 missing <- dataaggfinal %>%
   mutate(datepaste = as.Date(date, tz = "America/Sao_Paulo")) %>%
@@ -194,11 +193,15 @@ too_many_missing <- missing %>%
   filter(n >= 10) %>%
   mutate(LocalTime = paste(Cidade, datepaste, sep = " "))
 
+
+
 # remove missing data
 dataaggfinal <- dataaggfinal %>%
   mutate(LocalTime = paste(Cidade, as.Date(date), sep = " ")) %>%
   filter(!(LocalTime %in% too_many_missing$LocalTime)) %>%
   dplyr::select(-LocalTime)
+
+View(dataaggfinal)
 
 # mean imputation for the others
 
@@ -213,7 +216,8 @@ avg_hour <- dataaggfinal %>%
             PM2.5avg = mean(PM2.5, na.rm = TRUE),
             PM10avg = mean(PM10, na.rm = TRUE))
 
-dataaggfinal <- dataaggfinal %>%
+# anulado, por ora!!!! 2025-03-05
+dataaggfinal2 <- dataaggfinal %>%
   mutate(hour = hour(date)) %>%
   left_join(avg_hour, by = c("Cidade", "hour")) %>%
   mutate(rh_sensor = case_when(is.na(rh_sensor) ~ RHavg, TRUE ~ rh_sensor),
