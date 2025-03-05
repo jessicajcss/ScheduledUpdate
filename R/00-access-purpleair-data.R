@@ -230,7 +230,7 @@ aqiFromPM25 <- function(pm) {
 # Matching thermo data X legislation
 
 data_purpleair <- data_purpleair %>%
-  select(Cidade, Tipo, date, PM2.5) %>%
+  select(Cidade, Tipo, sensor_id, date, PM2.5) %>%
   dplyr::mutate(sample_day = as.Date(date, format = "%Y-%m-%d", , tz = "America/Sao_Paulo")) %>%
   select(-date) %>%
   drop_na() %>%
