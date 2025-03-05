@@ -172,7 +172,6 @@ tdf3 <- rbind(tdf, tdf2) %>%
   as_tibble()
 
 
-view(dataaggfinal)
 dataaggfinal <- merge(dataagg, tdf3, by = c("Cidade", "date"), all = T)
 
 
