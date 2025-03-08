@@ -224,7 +224,22 @@ aqiFromPM25 <- function(pm) {
 }
 
 ###########################################
+# Matching thermo data X legislation
 
+data_purpleair_instantaneo <- data_purpleair %>%
+  select(Cidade, Tipo, sensor_id, date, PM2.5) %>%
+  drop_na() %>%
+  subset(Tipo == "outdoor") %>%
+  dplyr::group_by(Cidade) %>%
+  dplyr::mutate(PM2.5 = mean(PM2.5, na.rm = T)) %>%
+  unique() %>%
+  replace(is.na(.), -999) %>% #WORKING AROUND NA VALUES
+  dplyr::rowwise() %>%
+  dplyr::mutate(AQI_PM2.5 = aqiFromPM25(PM2.5),
+                AQI_Qualidade = ifelse(!is.na(AQI_PM2.5), AQI_Qualidade(AQI_PM2.5), NA))  %>%
+  mutate_all(~ ifelse(. < 0, NA, .))
+
+save(data_purpleair_instantaneo, file = "./data/data_purpleair_instantaneo.Rda")
 
 
 # Matching thermo data X legislation
