@@ -1,6 +1,8 @@
 name: Telegram Alert
 
 on:
+  push:
+      branches: [ "main" ]
   schedule:
     - cron: '0 12 * * *'  # Runs daily at 12 PM UTC
   workflow_dispatch:
@@ -20,4 +22,4 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          source("R/01-alert_telegram.R")
+          run: Rscript R/01-alert_telegram.R
