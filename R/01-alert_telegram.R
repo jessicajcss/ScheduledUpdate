@@ -24,3 +24,14 @@ if (current_value > threshold) {
 } else {
   print("✅ No alert needed, value is within safe limits.")
 }
+
+
+### looking for chat_id
+#library(httr)
+
+#bot_token <- "YOUR_BOT_TOKEN"
+
+# Get updates from Telegram
+##url <- paste0("https://api.telegram.org/bot", bot_token, "/getUpdates")
+##response <- GET(url)
+##print(content(response, "text"))
