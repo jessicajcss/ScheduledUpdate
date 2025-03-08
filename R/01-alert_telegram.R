@@ -4,6 +4,15 @@ library(httr)
 threshold <- 100
 current_value <- 120  # Example value, replace with your dataset
 
+
+##########################################################################
+
+
+
+
+
+##########################################################################
+
 # Load credentials from GitHub Secrets
 bot_token <- Sys.getenv("TELEGRAM_BOT_TOKEN")
 chat_id <- Sys.getenv("TELEGRAM_CHAT_ID")
