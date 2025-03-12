@@ -4,9 +4,9 @@ name: run_job_scripts_meteo_purpleair
 
 on:
   push:
- #     branches: [ "main" ]
+      branches: [ "main" ]
   schedule:
- #   - cron:   "*/60 * * * *"
+    - cron:   "*/60 * * * *"
   workflow_dispatch:
 
 
