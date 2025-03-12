@@ -1,10 +1,18 @@
 name: Telegram Alert
 
 on:
+<<<<<<< HEAD
   push:
  #     branches: [ "main" ]
   schedule:
 #    - cron:   "0 */6 * * *"  # Runs every 6h
+=======
+ # push:
+   
+      #branches: [ "main" ]
+  #schedule:
+   # - cron:   "0 */6 * * *"  # Runs every 6h
+>>>>>>> f7c825ac3c86be09ee445017baa3a65f11dbb60e
   workflow_dispatch:
 
 jobs:
