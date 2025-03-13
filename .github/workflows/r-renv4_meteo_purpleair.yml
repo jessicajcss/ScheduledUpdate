@@ -75,6 +75,23 @@ jobs:
           source("R/01-meteo_hour.R")
         shell: Rscript {0}
 
+      # execute Rscript
+      - name: Execute Script
+        run: |
+          source("R/00-access-REPOnewdata-thermo-git.R")
+        shell: Rscript {0}
+
+      # execute Rscript
+      - name: Execute Script
+        run: |
+          source("R/00-data_wrangling_thermo.R")
+        shell: Rscript {0}
+
+      # execute Rscript
+      - name: Execute Script
+        run: |
+          source("R/01-AQI_calculation_thermo_data.R")
+        shell: Rscript {0}
 
       - name: Commit results
         run: |
