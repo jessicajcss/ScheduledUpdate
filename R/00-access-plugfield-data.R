@@ -68,33 +68,16 @@ fetch_large_data <- function(device_id, start_date, end_date) {
   return(final_df)
 }
 
-
-
-
-load(file = "./data/meteo/meteo_rbs.Rda")
-last_meteo_rbs <- meteo_rbs
-
-ultima_data <- last_meteo_rbs |>
-  mutate(date = as_datetime(date),
-         date = force_tz(date, tz = "America/Sao_Paulo")) |>
-  arrange(date) |>
-  tail(1) |>
-  select(date)
-
-# update date
-start_date <- ultima_data$date
-
-
 # DADOS ESCOLA
 device_id <- 3184
-#start_date <- "01/06/2023 00:00:00"  # Start period
+start_date <- "01/06/2023 00:00:00"  # Start period
 end_date <- Sys.time() #"26/02/2025 00:00:00"  # End period (more than 30 days)
 
 df_escola <- fetch_large_data(device_id, start_date, end_date)
 
 # DADOS DEFESA CIVIL
 device_id <- 3118
-#start_date <- "01/06/2023 00:00:00"  # Start period
+start_date <- "01/06/2023 00:00:00"  # Start period
 end_date <- Sys.time() #"26/02/2025 00:00:00"  # End period (more than 30 days)
 
 df_defesacivil <- fetch_large_data(device_id, start_date, end_date)
@@ -181,45 +164,3 @@ colnames(meteo_rbs) <- c('Cidade', 'date',
 # gerar arquivo
 save(meteo_rbs, file = "./data/meteo/meteo_rbs.Rda")
 
-
-
-
-
-#########################################################
-#########################################################
-
-#meteo_colombo <- read.csv("./data/meteo/dados_B806_H_2023-06-01_2025-02-26.csv",
- #                         skip = 10,
-  #                        sep = ";")
-
-
-#meteo_colombo <- meteo_colombo %>%
- # mutate(data = dmy(Data.Medicao),
-  #       time = sub("00", "", Hora.Medicao),# sub("(\\d+)(\\d{2})", "\\1:\\2", Hora.Medicao))
-   #      date = ymd_hms(paste0(data," ", time, ":00:00"))) %>%
-  #select(-Data.Medicao, -Hora.Medicao, -data, -time)
-
-#colnames(meteo_colombo) <- c('prec', 'press', 'press2', 'press3', 'press4',
- #                            'rad', 'temp1', 'temp', 'temp2', 'temp3', 'temp4', 'temp5', 'temp6',
-  #                           'tensao', 'umid1', 'umid2', 'umid',
-   #                          'wd', 'raj', 'ws', 'date')
-
-#meteo_colombo <- meteo_colombo %>%
- # mutate(Cidade = "Colombo",
-  #       uv = NA,) %>%
-  #select(Cidade, date, temp, ws, wd, prec, umid, rad, press, uv) %>%
-#  mutate(across(c(temp, ws, wd, prec, umid, rad, press, uv), as.numeric))
-
-
-#summary(meteo_colombo) # dentro da normalidade
-
-
-# gerar arquivo
-#save(meteo_colombo, file = "./data/meteo/meteo_colombo.Rda")
-
-
-
-#########################################################
-#########################################################
-#meteo_hour <- rbind(meteo_rbs, meteo_colombo)
-#save(meteo_hour, file = "./data/meteo_hour.Rda")
