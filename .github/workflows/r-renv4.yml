@@ -3,8 +3,8 @@
 name: run_job_scripts_repodata_wrangling
 
 on:
-  push:
-      branches: [ "main" ]
+#  push:
+  #    branches: [ "main" ]
   schedule:
     - cron: '0 9 * * *'
   workflow_dispatch:
