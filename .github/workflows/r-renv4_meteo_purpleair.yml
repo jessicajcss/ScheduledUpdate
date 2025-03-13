@@ -3,10 +3,10 @@
 name: run_job_scripts_meteo_purpleair
 
 on:
-  push:
-      branches: [ "main" ]
+#  push:
+    #  branches: [ "main" ]
   schedule:
-    - cron: '0 12 * * *'
+    - cron: '0 9 * * *'
 
   #  - cron:   "*/60 * * * *"
   workflow_dispatch:
@@ -75,6 +75,23 @@ jobs:
           source("R/01-meteo_hour.R")
         shell: Rscript {0}
 
+      # execute Rscript
+      - name: Execute Script
+        run: |
+          source("R/00-access-REPOnewdata-thermo-git.R")
+        shell: Rscript {0}
+
+      # execute Rscript
+      - name: Execute Script
+        run: |
+          source("R/00-data_wrangling_thermo.R")
+        shell: Rscript {0}
+
+      # execute Rscript
+      - name: Execute Script
+        run: |
+          source("R/01-AQI_calculation_thermo_data.R")
+        shell: Rscript {0}
 
       - name: Commit results
         run: |
