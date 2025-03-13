@@ -1,6 +1,6 @@
 # This is a basic workflow that only runs on schedule
 
-name: run_job_scripts_meteo_purpleair
+name: run_job_scripts_Meteo_QualidadeDoAr
 
 on:
 #  push:

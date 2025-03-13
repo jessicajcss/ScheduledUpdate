@@ -4,7 +4,7 @@
 
 
 source("R/00-getPurpleairApiHistory.R")
-purpleair_api <- "6842E278-8078-11ED-B6F4-42010A800007"#Sys.getenv("PURPLEAIR_API")
+purpleair_api <- Sys.getenv("PURPLEAIR_API")
 
 
 
@@ -32,9 +32,9 @@ todos_purpleair <- getPurpleairApiHistory(
   average        = "0", ### em tempo real
   fields         = variaveis)
 
+# Fixing datetime ----
 
 todos_purpleair$date <- with_tz(todos_purpleair$time_stamp, tz = "America/Sao_Paulo")
-
 
 
 #### corrigindo concentracao conforme razão entre a/b e melhor coerência nas concentracoes
@@ -81,13 +81,13 @@ purpleair <- purpleair %>%
          sensor_id = case_when(sensor_id == '175451' & date <= "2023-09-14 00:00:00" ~ NA, TRUE ~ sensor_id))
 
 purpleair <- purpleair %>%
-  filter(!is.na(sensor_id))
+  dplyr::filter(!is.na(sensor_id))
 
 
 
 ## identificando os locais de sensores
 data_purpleair <- purpleair %>%
-  filter(sensor_id != "175411") %>%
+  dplyr::filter(sensor_id != "175411") %>%
   mutate(sensor_id = as.character(sensor_id),
          date = force_tz(date, tz = "America/Sao_Paulo"),
          Cidade = case_when(sensor_id == '91267' ~ "Rio Branco do Sul",
@@ -235,8 +235,8 @@ save(data_purpleair_instantaneo, file = "./data/data_purpleair_instantaneo.Rda")
 
 data_purpleair_new <- data_purpleair %>%
   select(Cidade, Tipo, sensor_id, date, PM2.5) %>%
-  dplyr::mutate(sample_day = as.Date(date, format = "%Y-%m-%d", , tz = "America/Sao_Paulo")) %>%
-  select(-date) %>%
+  dplyr::mutate(sample_day = as.Date(date, format = "%Y-%m-%d", tz = "America/Sao_Paulo")) %>%
+  dplyr::select(-date) %>%
   drop_na() %>%
   dplyr::group_by(Cidade, sample_day) %>%
   dplyr::mutate(PM2.5 = mean(PM2.5, na.rm = T)) %>%
@@ -245,7 +245,7 @@ data_purpleair_new <- data_purpleair %>%
   dplyr::rowwise() %>%
   dplyr::mutate(AQI_PM2.5 = aqiFromPM25(PM2.5),
                 AQI_Qualidade = ifelse(!is.na(AQI_PM2.5), AQI_Qualidade(AQI_PM2.5), NA))  %>%
-  mutate_all(~ ifelse(. < 0, NA, .))
+  dplyr::mutate_all(~ ifelse(. < 0, NA, .))
 
 
 load(file = "./data/data_purpleair.Rda")

@@ -1,6 +1,6 @@
 ### DOWNLOAD DATA INMET
 # Elaborado por Santos-Silva, J. C.
-## Last update: 2025-03-12
+## Last update: 2025-03-13
 
 
 
@@ -20,16 +20,9 @@
 #> https://tempo.inmet.gov.br/TabelaEstacoes/B806
 
 
-# Load necessary libraries
-library(httr)
-library(jsonlite)
-library(dplyr)
-
-
-
 # Function to get INMET token from environment variables
 get_inmet_token <- function() {
-  token <- Sys.getenv("INMET_TOKEN")
+  token <- seu_token
   if (token == "") {
     stop("The INMET API requires a token. Please set the INMET_TOKEN environment variable.")
   }
@@ -104,12 +97,14 @@ convert_to_df <- function(data) {
 
 load(file = "./data/meteo_colombo.Rda")
 last_meteo_colombo <- meteo_colombo
+rm(meteo_colombo)
 
 ultima_data <- last_meteo_colombo |>
-  mutate(date = as.Date(date)) |>
-  arrange(date) |>
+  dplyr::mutate(date = as.Date(date)) |>
+  dplyr::arrange(date) |>
   tail(1) |>
-  select(date)
+  dplyr::select(date)
+
 
 # Exampledate# Example usage ----
 start_date <- ultima_data$date #"2023-06-01" # máximo de um ano!!
@@ -120,16 +115,17 @@ seu_token <- Sys.getenv("INMET_TOKEN")
 data <- download_data(start_date, end_date, station_code)
 df <- convert_to_df(data)
 
+
 # Print the first few rows
 print(head(df))
 
+
+
+
+
+#########################################################
+#########################################################
 ### Formating dataset ----
-
-
-
-
-#########################################################
-#########################################################
 
 
 meteo_colombo <- df |>
@@ -142,13 +138,14 @@ meteo_colombo <- df |>
 colnames(meteo_colombo) <- c('Cidade', 'date', 'temp', 'ws', 'wd', 'prec', 'umid', 'rad', 'press', 'uv')
 
 meteo_colombo <- meteo_colombo |>
+  dplyr::mutate(date = with_tz(date, tz = "America/Chicago")) |>
+  dplyr::mutate(date = force_tz(date, tz = "America/Sao_Paulo")) |>
   dplyr::mutate(Cidade = "Colombo",
          across(c(temp, ws, wd, prec, umid, rad, press, uv), as.numeric))
 
 meteo_colombo <- rbind(meteo_colombo, last_meteo_colombo) |>
-  arrange(date) |>
+  dplyr::arrange(date) |>
   unique() |>
-  mutate(date = with_tz(date, tz = "America/Sao_Paulo")) |>
   subset(!is.na(temp))
 
 save(meteo_colombo, file = "./data/meteo_colombo.Rda")

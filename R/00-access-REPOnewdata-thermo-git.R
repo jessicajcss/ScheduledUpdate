@@ -1,5 +1,5 @@
 # Define repositories to fetch (replace with your list of repositories)
-quarto_orgs <- c("Dados_GM_UFPR")  # Replace with actual repo names
+thermo_orgs <- c("Dados_GM_UFPR")  # Replace with actual repo names
 #gh::gh_whoami()
 
 github_pat <- Sys.getenv("GITHUB_PAT")
@@ -22,7 +22,7 @@ get_repo_trees <- function(repo_name) {
 }
 
 # Iterate over all repositories and fetch the trees
-thermo_repos_raw <- purrr::map(quarto_orgs, function(repo) {
+thermo_repos_raw <- purrr::map(thermo_orgs, function(repo) {
   tryCatch(
     {
       response <- get_repo_trees(repo)
@@ -61,6 +61,8 @@ result <- thermo_repos |>
   dplyr::anti_join(file_path, by = "url")
 
 
+
+if (nrow(result) > 0) {
 # paths to save unique url from files already downloaded to exclude them from the next loop
 file_path <- file_path_new
 
@@ -112,7 +114,7 @@ colnames(data_git) <- c('Cidade','date','SO2', 'NO2', 'O3', 'CO', 'PM2.5','PM10'
 
 
 
-# Loading previou full dataset
+# Loading previous full dataset
 
 load("./data/data_thermo_update.Rda")
 
@@ -120,7 +122,10 @@ data_thermo <- rbind(data_thermo, data_git) |>
   unique() |>
   dplyr::arrange(date)
 
-
+} else {
+  data_thermo <- data_thermo
+  file_path <- file_path
+}
 
 #################################################################
 ########## UNIFICANDO UPDATED BANCO DE DADOS 'BASE' IN SITU & GIT
