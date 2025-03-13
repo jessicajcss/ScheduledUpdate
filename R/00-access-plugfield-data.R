@@ -7,6 +7,7 @@ library(httr)
 library(jsonlite)
 library(lubridate)
 library(dplyr)
+library(purrr)
 
 # Function to fetch data in 30-day chunks
 fetch_large_data <- function(device_id, start_date, end_date) {
@@ -70,14 +71,14 @@ fetch_large_data <- function(device_id, start_date, end_date) {
 
 # DADOS ESCOLA
 device_id <- 3184
-start_date <- "01/01/2025 00:00:00"  # Start period (new year, to add to historical data later)
+start_date <- "01/06/2023 00:00:00"  # Start period (new year, to add to historical data later)
 end_date <- Sys.time() #"26/02/2025 00:00:00"  # End period (more than 30 days)
 
 df_escola <- fetch_large_data(device_id, start_date, end_date)
 
 # DADOS DEFESA CIVIL
 device_id <- 3118
-start_date <- "01/01/2025 00:00:00"  # Start period (new year, to add to historical data later)
+start_date <- "01/06/2023 00:00:00"  # Start period (new year, to add to historical data later)
 end_date <- Sys.time() #"26/02/2025 00:00:00"  # End period (more than 30 days)
 
 df_defesacivil <- fetch_large_data(device_id, start_date, end_date)
@@ -94,9 +95,7 @@ head(df)
 # selecionar e pardonizar variaveis, renomear estacao
 # criar loop update horário
 # criar repositório com senha e token
-library(lubridate)
-library(dplyr)
-library(purrr)
+
 
 df <- df %>%
   mutate(across(where(is.list), ~ map_chr(., ~ if (length(.) == 0) NA else paste(., collapse = ",")))) %>%  # Flatten lists
@@ -161,11 +160,11 @@ colnames(meteo_rbs) <- c('Cidade', 'date',
                          'temp', 'ws', 'wd', 'prec', 'umid', 'rad', 'press', 'uv')
 
 
-load(file = "./data/meteo/meteo_rbs.Rda")  #(adding to historical data later)
+#load(file = "./data/meteo/meteo_rbs.Rda")  #(adding to historical data later)
 
-meteo_rbs <- rbind(meteo_rbs, meteo_rbs_new) |>
-  unique() |>
-  arrange(date)
+#meteo_rbs <- rbind(meteo_rbs, meteo_rbs_new) |>
+#  unique() |>
+#  arrange(date)
 
 # gerar arquivo
 save(meteo_rbs, file = "./data/meteo/meteo_rbs.Rda")
