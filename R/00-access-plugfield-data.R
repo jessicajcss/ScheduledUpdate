@@ -70,14 +70,14 @@ fetch_large_data <- function(device_id, start_date, end_date) {
 
 # DADOS ESCOLA
 device_id <- 3184
-start_date <- "01/06/2023 00:00:00"  # Start period
+start_date <- "01/01/2025 00:00:00"  # Start period (new year, to add to historical data later)
 end_date <- Sys.time() #"26/02/2025 00:00:00"  # End period (more than 30 days)
 
 df_escola <- fetch_large_data(device_id, start_date, end_date)
 
 # DADOS DEFESA CIVIL
 device_id <- 3118
-start_date <- "01/06/2023 00:00:00"  # Start period
+start_date <- "01/01/2025 00:00:00"  # Start period (new year, to add to historical data later)
 end_date <- Sys.time() #"26/02/2025 00:00:00"  # End period (more than 30 days)
 
 df_defesacivil <- fetch_large_data(device_id, start_date, end_date)
@@ -153,13 +153,19 @@ summary(meteo_rbs) # valores dentro do "normal"
 meteo_rbs <- meteo_rbs[!is.na(meteo_rbs$deltat), ]
 
 # selecionando variáveis de interesse
-meteo_rbs <- meteo_rbs %>%
+meteo_rbs_new <- meteo_rbs %>%
   mutate(Cidade = "Rio Branco do Sul") %>%
   select(Cidade, timestamp, temp, wind, direction, rain, humidity, radiation, pressure, uv)
 
 colnames(meteo_rbs) <- c('Cidade', 'date',
                          'temp', 'ws', 'wd', 'prec', 'umid', 'rad', 'press', 'uv')
 
+
+load(file = "./data/meteo/meteo_rbs.Rda")  #(adding to historical data later)
+
+meteo_rbs <- rbind(meteo_rbs, meteo_rbs_new) |>
+  unique() |>
+  arrange(date)
 
 # gerar arquivo
 save(meteo_rbs, file = "./data/meteo/meteo_rbs.Rda")
