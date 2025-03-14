@@ -287,6 +287,5 @@ air_quality_data <- dataaggfinal%>%
   dplyr::mutate(AQI = pmax(AQI_SO2, AQI_NO2, AQI_O3, AQI_CO, AQI_PM25, AQI_PM10, na.rm = T),
          AQI_Qualidade = AQI_Qualidade(AQI))
 
-View(air_quality_data)
 
 save(air_quality_data, file="./data/air_quality_data.Rda")
