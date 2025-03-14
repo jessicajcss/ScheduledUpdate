@@ -12,7 +12,7 @@ load(file = "./data/meteo/meteo_rbs.Rda")
 summary(meteo_rbs) # dentro da normalidade
 
 meteo_hour <- rbind(meteo_rbs, meteo_colombo) |>
-  dplyr::mutate(date = as_datetime(date, tz = "America/Sao_Paulo"))
+  dplyr::mutate(date = lubridate::as_datetime(date, tz = "America/Sao_Paulo"))
 
 
 # saving

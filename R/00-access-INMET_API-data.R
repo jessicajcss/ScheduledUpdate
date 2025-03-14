@@ -148,6 +148,6 @@ meteo_colombo <- rbind(meteo_colombo, last_meteo_colombo) |>
   unique() |>
   subset(!is.na(temp))
 
-save(meteo_colombo, file = "./data/meteo_colombo.Rda")
+save(meteo_colombo, file = "./data/meteo/meteo_colombo.Rda")
 
 
