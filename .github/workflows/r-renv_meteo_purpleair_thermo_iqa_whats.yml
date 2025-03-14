@@ -102,3 +102,12 @@ jobs:
           git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Send WhatsApp Message
+        env:
+          WHAPI_INSTANCE_ID: ${{ secrets.WHAPI_INSTANCE_ID }}
+          WHAPI_TOKEN: ${{ secrets.WHAPI_TOKEN }}
+          WHATSAPP_NUMBER: ${{ secrets.WHATSAPP_NUMBER }}
+          WHAPI_API_URL: ${{ secrets.WHAPI_API_URL }}
+          WHATS_CHANNEL_ID: ${{ secrets.WHATS_CHANNEL_ID }}
+        run: Rscript R/00-send_whatsapp.R
