@@ -127,9 +127,7 @@ data_thermo <- rbind(data_thermo, data_git) |>
   dplyr::arrange(date)
 
 } else {
-  load(file = "./data/data_thermo_update.Rda")|>
-    unique() |>
-    dplyr::arrange(date)
+  load(file = "./data/data_thermo_update.Rda")
 
   data_thermo <- data_thermo
 
