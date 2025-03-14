@@ -53,8 +53,11 @@ thermo_repos <- thermo_repos_raw[[1]]$tree |>
 load("./data_raw/file_path.Rda") # data previously downloaded
 
 url <- thermo_repos$url
+
 file_path_new <- url |>
   as.data.frame()
+
+
 # Updating only data since the last download ---
 
 result <- thermo_repos |>
@@ -124,8 +127,13 @@ data_thermo <- rbind(data_thermo, data_git) |>
   dplyr::arrange(date)
 
 } else {
-  load(file = "./data/data_thermo_update.Rda")
+  load(file = "./data/data_thermo_update.Rda")|>
+    unique() |>
+    dplyr::arrange(date)
+
   data_thermo <- data_thermo
+
+
   file_path <- file_path
 }
 
