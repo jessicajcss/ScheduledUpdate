@@ -2,6 +2,12 @@
 ### Last update: 2025-03-04
 ## By: Santos-Silva, J. C.
 
+options("menu.graphics" = FALSE)
+
+conflicts_prefer(dplyr::filter)
+conflicts_prefer(purrr::flatten)
+conflicts_prefer(dplyr::lag)
+
 
 source("R/00-getPurpleairApiHistory.R")
 purpleair_api <- Sys.getenv("PURPLEAIR_API")
