@@ -116,7 +116,7 @@ colnames(data_git) <- c('Cidade','date','SO2', 'NO2', 'O3', 'CO', 'PM2.5','PM10'
 
 # Loading previous full dataset
 
-load("./data/data_thermo_update.Rda")
+load(file = "./data/data_thermo_update.Rda")
 
 data_thermo <- rbind(data_thermo, data_git) |>
   unique() |>
