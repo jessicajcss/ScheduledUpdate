@@ -173,7 +173,7 @@ res2 <- meteo_rbs_esc[!is.na(meteo_rbs_esc$tempMax), ] |>
 meteo_rbs_dc <- rbind(res1, res) |>
   dplyr::arrange(timestamp) |>
   unique()
-}
+
 
 ## padronizando sequencia datas para preenchimento
 
@@ -189,6 +189,9 @@ res2 <- dplyr::right_join(res2, temp, by = "timestamp")
 meteo_rbs <- dplyr::rows_patch(meteo_rbs_dc, res2, by = "timestamp")
 summary(meteo_rbs) # valores dentro do "normal"
 
+} else{
+  meteo_rbs <- meteo_rbs_dc
+}
 #selecionando dados existentes
 meteo_rbs <- meteo_rbs[!is.na(meteo_rbs$deltat), ]
 
