@@ -208,7 +208,7 @@ meteo_rbs <- rbind(meteo_rbs, last_meteo_rbs) |>
   dplyr::mutate(date = lubridate::force_tz(date, tz = "America/Sao_Paulo")) |>
   unique()
 
-tz(meteo_rbs$date)
+
 
 # gerar arquivo
 save(meteo_rbs, file = "./data/meteo/meteo_rbs.Rda")
