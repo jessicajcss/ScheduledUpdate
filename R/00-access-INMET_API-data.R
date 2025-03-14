@@ -95,7 +95,7 @@ convert_to_df <- function(data) {
 
 
 
-load(file = "./data/meteo_colombo.Rda")
+load(file = "./data/meteo/meteo_colombo.Rda")
 last_meteo_colombo <- meteo_colombo
 rm(meteo_colombo)
 
