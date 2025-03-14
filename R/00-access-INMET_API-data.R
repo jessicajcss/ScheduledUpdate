@@ -138,8 +138,8 @@ meteo_colombo <- df |>
 colnames(meteo_colombo) <- c('Cidade', 'date', 'temp', 'ws', 'wd', 'prec', 'umid', 'rad', 'press', 'uv')
 
 meteo_colombo <- meteo_colombo |>
-  dplyr::mutate(date = with_tz(date, tz = "America/Chicago")) |>
-  dplyr::mutate(date = force_tz(date, tz = "America/Sao_Paulo")) |>
+  dplyr::mutate(date = lubridate::with_tz(date, tz = "America/Chicago")) |>
+  dplyr::mutate(date = lubridate::force_tz(date, tz = "America/Sao_Paulo")) |>
   dplyr::mutate(Cidade = "Colombo",
          across(c(temp, ws, wd, prec, umid, rad, press, uv), as.numeric))
 
