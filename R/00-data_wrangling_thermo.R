@@ -184,7 +184,6 @@ dataaggfinal <- dataaggfinal |>
   dplyr::filter(!(LocalTime %in% too_many_missing$LocalTime)) |>
   dplyr::select(-LocalTime)
 
-View(dataaggfinal)
 
 
 # preenchimento anulado, por ora!!!! 2025-03-05 ## testar aqui pq aparece AMT 03/03 após calculos com data_thermo
