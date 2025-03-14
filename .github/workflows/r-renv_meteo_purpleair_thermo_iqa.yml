@@ -7,14 +7,11 @@ on:
     - cron: '0 * * * *'  # Runs every hour
   workflow_dispatch:  # Allows manual execution
 
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job
-  run_thingy:
-    # The type of runner that the job will run on
-    runs-on: windows-latest
-    # retrieve secrets from github
+  run-r-script:
+    runs-on: ubuntu-latest  # Faster than Windows
+
+    env:
     env:
         apikey: ${{ secrets.APIKEY}}
         apisecretkey: ${{ secrets.APISECRETKEY}}
@@ -26,7 +23,6 @@ jobs:
         PURPLEAIR_API: ${{ secrets.PURPLEAIR_API }}
         INMET_TOKEN: ${{ secrets.INMET_TOKEN }}
         RENV_PATHS_ROOT: ~/.local/share/renv
-    #name: Run R script with renv
 
     steps:
       - name: Checkout repository
@@ -45,6 +41,14 @@ jobs:
           key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
           restore-keys: |
             ${{ runner.os }}-renv-
+
+      - name: Check if cache restored
+        run: ls -lah ${{ env.RENV_PATHS_ROOT }} || echo "Cache not restored"
+
+      - name: Ensure renv is installed
+        run: |
+          if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
+        shell: Rscript {0}
 
       - name: Restore R packages
         run: renv::restore()
