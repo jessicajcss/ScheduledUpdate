@@ -97,7 +97,9 @@ fetch_large_data <- function(device_id, start_date, end_date) {
 
 load(file = "./data/meteo/meteo_rbs.Rda")
 last_meteo_rbs <- meteo_rbs |>
-  dplyr::mutate(date = lubridate::force_tz(date, tz = "America/Sao_Paulo"))
+  dplyr::mutate(date = lubridate::with_tz(date, tz = "America/Sao_Paulo")) # |>
+  #subset(date < lubridate::as_datetime("2025-03-10 00:00:00"))
+
 rm(meteo_rbs)
 
 ultima_data <- last_meteo_rbs |>
@@ -196,7 +198,8 @@ meteo_rbs <- meteo_rbs[!is.na(meteo_rbs$deltat), ]
 
 # selecionando variáveis de interesse
 meteo_rbs <- meteo_rbs |>
-  dplyr::mutate(Cidade = "Rio Branco do Sul") |>
+  dplyr::mutate(Cidade = "Rio Branco do Sul",
+                timestamp = lubridate::force_tz(timestamp, tz = "America/Sao_Paulo")) |>
   dplyr::select(Cidade, timestamp, temp, wind, direction, rain, humidity, radiation, pressure, uv)
 
 colnames(meteo_rbs) <- c('Cidade', 'date',
@@ -205,7 +208,8 @@ colnames(meteo_rbs) <- c('Cidade', 'date',
 
 meteo_rbs <- rbind(meteo_rbs, last_meteo_rbs) |>
   dplyr::mutate(date = lubridate::force_tz(date, tz = "America/Sao_Paulo")) |>
-  unique()
+  unique() |>
+  dplyr::arrange(date)
 
 
 
