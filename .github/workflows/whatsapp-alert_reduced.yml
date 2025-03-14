@@ -1,0 +1,53 @@
+name: Send WhatsApp Message
+
+on:
+  schedule:
+    - cron: '0 10,15,20 * * *'
+  workflow_dispatch:
+
+jobs:
+  send_message:
+    runs-on: ubuntu-latest  # Faster than Windows
+
+    env:
+      GITHUB_PAT: ${{ secrets.MY_GITHUB_PAT }}
+      RENV_PATHS_ROOT: ~/.local/share/renv
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+
+      - name: Set up renv
+        uses: r-lib/actions/setup-renv@v2
+
+      - name: Cache renv packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.RENV_PATHS_ROOT }}
+          key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-renv-
+
+      - name: Check if cache restored
+        run: ls -lah ${{ env.RENV_PATHS_ROOT }} || echo "Cache not restored"
+
+      - name: Ensure renv is installed
+        run: |
+          if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
+        shell: Rscript {0}
+
+      - name: Restore R packages
+        run: renv::restore()
+        shell: Rscript {0}
+
+      - name: Send WhatsApp Message
+        env:
+          WHAPI_INSTANCE_ID: ${{ secrets.WHAPI_INSTANCE_ID }}
+          WHAPI_TOKEN: ${{ secrets.WHAPI_TOKEN }}
+          WHATSAPP_NUMBER: ${{ secrets.WHATSAPP_NUMBER }}
+          WHAPI_API_URL: ${{ secrets.WHAPI_API_URL }}
+          WHATS_CHANNEL_ID: ${{ secrets.WHATS_CHANNEL_ID }}
+        run: Rscript R/00-send_whatsapp.R
