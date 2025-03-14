@@ -146,8 +146,7 @@ head(df)  # Check the cleaned dataframe
 
 
 # fix timestamp format
-df <- df |>
-  dplyr::mutate(timestamp = lubridate::ymd_hms(localDateTime))
+df[[40]] <- lubridate::ymd_hms(df[[38]])
 
 head(df$timestamp)
 summary(df)
