@@ -89,11 +89,14 @@ jobs:
           source("R/01-AQI_calculation_thermo_data.R")
         shell: Rscript {0}
 
-      - name: Commit results
+      # --- Auto-commit and push changes to data files ---
+      - name: Commit and push any changes
         run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Actions"
-          git pull
-          git add .
-          git commit -m "Results from R script" || echo "No changes to commit"
-          git push origin || echo "No changes to commit"-
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add data/*.Rda data/meteo/*.Rda data_raw/*.Rda || echo "No changes to add"
+          git commit -m "Auto-commit updated data files [skip ci]" || echo "No changes to commit"
+          git pull origin main --rebase
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
