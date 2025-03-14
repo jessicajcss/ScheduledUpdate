@@ -4,9 +4,9 @@
 
 options("menu.graphics" = FALSE)
 
-conflicts_prefer(dplyr::filter)
-conflicts_prefer(purrr::flatten)
-conflicts_prefer(dplyr::lag)
+conflicted::conflicts_prefer(dplyr::filter)
+conflicted::conflicts_prefer(purrr::flatten)
+conflicted::conflicts_prefer(dplyr::lag)
 
 
 source("R/00-getPurpleairApiHistory.R")
