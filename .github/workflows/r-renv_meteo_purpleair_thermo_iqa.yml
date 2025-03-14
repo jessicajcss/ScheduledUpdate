@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest  # Faster than Windows
 
     env:
-    env:
         apikey: ${{ secrets.APIKEY}}
         apisecretkey: ${{ secrets.APISECRETKEY}}
         access_token: ${{ secrets.ACCESS_TOKEN}}
