@@ -25,12 +25,12 @@ if (lubridate::hour(hoje_hora) != 0) {
 
 
 # THERMO data in real time, in ug/m³ and mg/m³ (CO)
-load(url("https://github.com/jessicajcss/ScheduledUpdate/raw/refs/heads/main/data/data_thermo_instantaneo_ugm3.Rda"))
+load(file = "./data/data_thermo_instantaneo_ugm3.Rda")
 
 lubridate::tz(data_thermo_instantaneo$date)
 
 # PURPLEAIR data in real time, in ug/m³
-load(url("https://github.com/jessicajcss/ScheduledUpdate/raw/refs/heads/main/data/data_purpleair_instantaneo.Rda"))
+load(file = "./data/data_purpleair_instantaneo.Rda")
 
 # para valores de concentracao, preferência é dada ao registrado pelos GM
 data_purpleair_instantaneo <- data_purpleair_instantaneo |>
@@ -63,13 +63,13 @@ alerta <- real_time |>
 
 ################# NOTICE: IQA last 24 h #################
 # THERMO IQA last 24h
-load(url("https://github.com/jessicajcss/ScheduledUpdate/raw/refs/heads/main/data/air_quality_data.Rda"))
+load(file = "./data/air_quality_data.Rda")
 
 thermo_iqa <- air_quality_data |>
   dplyr::mutate(sensor = "Thermo GM-5000")
 
 # PURPLEAIR IQA last 24h
-load(url("https://github.com/jessicajcss/ScheduledUpdate/raw/refs/heads/main/data/data_purpleair.Rda"))
+load(file = "./data/data_purpleair.Rda")
 
 purpleair_iqa <- data_purpleair |>
   dplyr::mutate(sensor = "PurpleAir",
