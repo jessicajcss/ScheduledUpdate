@@ -1,6 +1,9 @@
 # Wrangled instantaneous data
 
+#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!
 #!!!! CHECAR LINHAS 51, 112 & LOOP message para AMT ----
+#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#!!!!#
+
 
 library(httr)
 library(jsonlite)
