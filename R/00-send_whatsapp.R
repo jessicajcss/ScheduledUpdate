@@ -14,7 +14,14 @@ observacao <- "\n 🧾 *Boletim de Qualidade do Ar \n(Lab-Air, UFPR)* \n"
 
 
 #### 3ª Mensagem = referência
-referencia <- "\n🔎 Obs.: Valores registrados por sensor da Thermo GM-5000 em Rio Branco do Sul e sensores PurpleAir nas demais cidades. \n 🧐 Mais informações: https://rmcqualidadedoar.shinyapps.io/dados/ "
+if( hoje %in% data_thermo_instantaneo$date[data_thermo_instantaneo$Cidade == "Rio Branco do Sul"]) {
+
+  referencia <- "\n🔎 Obs.: Valores registrados por sensor da Thermo GM-5000 em Rio Branco do Sul e sensores PurpleAir nas demais cidades. \n 🧐 Mais informações: https://rmcqualidadedoar.shinyapps.io/dados/ "
+
+} else {
+  referencia <- "\n🔎 Obs.: Valores registrados por sensores PurpleAir. \n 🧐 Mais informações: https://rmcqualidadedoar.shinyapps.io/dados/ "
+
+}
 
 
 

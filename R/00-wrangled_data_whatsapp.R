@@ -33,9 +33,19 @@ lubridate::tz(data_thermo_instantaneo$date)
 load(file = "./data/data_purpleair_instantaneo.Rda")
 
 # para valores de concentracao, preferência é dada ao registrado pelos GM
-data_purpleair_instantaneo <- data_purpleair_instantaneo |>
-  dplyr::select(Cidade, date, PM2.5) |>
-  subset(Cidade != "Rio Branco do Sul") #& Cidade != "Almirante Tamandaré")
+
+if (hoje %in% data_thermo_instantaneo$date[data_thermo_instantaneo$Cidade == "Rio Branco do Sul"]) {
+
+  data_purpleair_instantaneo <- data_purpleair_instantaneo |>
+    dplyr::select(Cidade, date, PM2.5) |>
+    subset(Cidade != "Rio Branco do Sul") #& Cidade != "Almirante Tamandaré")
+
+  } else {
+
+  data_purpleair_instantaneo <- data_purpleair_instantaneo |>
+    dplyr::select(Cidade, date, PM2.5)
+
+}
 
 data_purpleair_instantaneo$PM2.5[data_purpleair_instantaneo$PM2.5 < 0] <- 0
 
@@ -71,10 +81,25 @@ thermo_iqa <- air_quality_data |>
 # PURPLEAIR IQA last 24h
 load(file = "./data/data_purpleair.Rda")
 
-purpleair_iqa <- data_purpleair |>
-  dplyr::mutate(sensor = "PurpleAir",
-                AQI = AQI_PM2.5)  |>
-  subset(Cidade != "Rio Branco do Sul") #& Cidade != "Almirante Tamandaré")
+
+
+# para valores de concentracao, preferência é dada ao registrado pelos GM
+
+if (hoje %in% data_thermo_instantaneo$date[data_thermo_instantaneo$Cidade == "Rio Branco do Sul"]) {
+
+  purpleair_iqa <- data_purpleair |>
+    dplyr::mutate(sensor = "PurpleAir",
+                  AQI = AQI_PM2.5)  |>
+    subset(Cidade != "Rio Branco do Sul") #& Cidade != "Almirante Tamandaré")
+
+} else {
+
+  purpleair_iqa <- data_purpleair |>
+    dplyr::mutate(sensor = "PurpleAir",
+                  AQI = AQI_PM2.5)
+}
+
+
 
 # unificando dados sensores
 IQA_last24H <- dplyr::bind_rows(thermo_iqa, purpleair_iqa)
@@ -118,7 +143,7 @@ for (i in 1:nrow(IQA_last24H)) {
     print(paste("City:", City))  # Debugging
     print(paste("Iteração", i, "- Cidade:", City))
 
-    if (City != "Rio Branco do Sul") {
+    if (City != "Rio Branco do Sul" | !(hoje %in% data_thermo_instantaneo$date[data_thermo_instantaneo$Cidade == "Rio Branco do Sul"])) {
 
       subset_alerta <- alerta |> subset(Cidade == City & pollutant == "PM2.5") |>
         dplyr::mutate(concentration = round(concentration, 1))
