@@ -167,7 +167,8 @@ for (i in 1:nrow(IQA_last24H)) {
     print(paste("City:", City))  # Debugging
     print(paste("Iteração", i, "- Cidade:", City))
 
-    if (City != "Rio Branco do Sul" | !(hoje %in% data_thermo_instantaneo$date[data_thermo_instantaneo$Cidade == "Rio Branco do Sul"])) {
+    if ((City != "Rio Branco do Sul" | !(hoje %in% data_thermo_instantaneo$date[data_thermo_instantaneo$Cidade == "Rio Branco do Sul"])) &
+        (City != "Almirante Tamandaré" | !(hoje %in% data_thermo_instantaneo$date[data_thermo_instantaneo$Cidade == "Almirante Tamandaré"]))) {
 
       subset_alerta <- alerta |> subset(Cidade == City & pollutant == "PM2.5") |>
         dplyr::mutate(concentration = round(concentration, 1))

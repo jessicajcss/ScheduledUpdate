@@ -1,5 +1,5 @@
 ### SOURCE DATA - MESSAGE
-source('R/00-wrangled_data_whatsapp.R')
+source('R/00-wrangled_data_whatsapp_bothThermo.R')
 
 
 
@@ -14,16 +14,20 @@ observacao <- "\n 🧾 *Boletim de Qualidade do Ar \n(Lab-Air, UFPR)* \n"
 
 
 #### 3ª Mensagem = referência
-if( hoje %in% data_thermo_instantaneo$date[data_thermo_instantaneo$Cidade == "Rio Branco do Sul"]) {
+cidades_thermo <- data_thermo_instantaneo$Cidade[data_thermo_instantaneo$date == hoje]
 
+if ("Almirante Tamandaré" %in% cidades_thermo & "Rio Branco do Sul" %in% cidades_thermo) {
+  referencia <- "\n🔎 Obs.: Valores registrados por sensor da Thermo GM-5000 em Almirante Tamandaré e Rio Branco do Sul, e sensores PurpleAir nas demais cidades. \n 🧐 Mais informações: https://rmcqualidadedoar.shinyapps.io/dados/ "
+
+} else if ("Rio Branco do Sul" %in% cidades_thermo) {
   referencia <- "\n🔎 Obs.: Valores registrados por sensor da Thermo GM-5000 em Rio Branco do Sul e sensores PurpleAir nas demais cidades. \n 🧐 Mais informações: https://rmcqualidadedoar.shinyapps.io/dados/ "
+
+} else if ("Almirante Tamandaré" %in% cidades_thermo) {
+  referencia <- "\n🔎 Obs.: Valores registrados por sensor da Thermo GM-5000 em Almirante Tamandaré e sensores PurpleAir nas demais cidades. \n 🧐 Mais informações: https://rmcqualidadedoar.shinyapps.io/dados/ "
 
 } else {
   referencia <- "\n🔎 Obs.: Valores registrados por sensores PurpleAir. \n 🧐 Mais informações: https://rmcqualidadedoar.shinyapps.io/dados/ "
-
 }
-
-
 
 #### 2ª Mensagem = boletim
 
