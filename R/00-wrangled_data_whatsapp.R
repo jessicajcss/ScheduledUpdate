@@ -94,28 +94,28 @@ IQA_last24H <- IQA_last24H |>
 # Simulated value (replace with real data)
 threshold <- 1
 
-if (length(unique(alerta$pollutant)) > 1) {
+#if (length(unique(alerta$pollutant)) > 1) {
 
-  out <- vector("list", length(unique(alerta$pollutant))) # vetor com o correspondente numero de variaveis meteorologicas
+ # out <- vector("list", length(unique(alerta$pollutant))) # vetor com o correspondente numero de variaveis meteorologicas
 
-  } else {
+  #} else {
 
-  out <- vector("list",
-                1) # vetor com o correspondente numero de variaveis meteorologicas
+  # out <- vector("list",  1) # vetor com o correspondente numero de variaveis meteorologicas
 
-  }
+  #}
 
 IQA_last24H <- dplyr::filter(IQA_last24H, !is.na(Cidade))
 
 print(dim(IQA_last24H))  # <-- Isso imprimirá (número de linhas, número de colunas)
 
+out <- vector("list", nrow(IQA_last24H))  # Initialize the list
 
 for (i in 1:nrow(IQA_last24H)) {
 
   for (j in 1:length(unique(alerta$pollutant))) {
 
     City <- Cidades[i]
-    print(paste("City:", City))  # <-- Debug
+    print(paste("City:", City))  # Debugging
     print(paste("Iteração", i, "- Cidade:", City))
 
     if (City != "Rio Branco do Sul") {
@@ -123,47 +123,39 @@ for (i in 1:nrow(IQA_last24H)) {
       subset_alerta <- alerta |> subset(Cidade == City & pollutant == "PM2.5") |>
         dplyr::mutate(concentration = round(concentration, 1))
 
-      excede <- ifelse(rlang::is_empty(subset_alerta$limite),
-                       "não medido",
-                       subset_alerta$limite)
+      if (nrow(subset_alerta) == 0) next  # Skip if empty
 
+      if (is.null(out[[i]])) out[[i]] <- list()  # Ensure the list exists
+
+      excede <- ifelse(rlang::is_empty(subset_alerta$limite), "não medido", subset_alerta$limite)
       particulas <- 'MP2.5'
-
       valor <- subset_alerta$concentration
-
       registro <- unique(lubridate::ymd_hms(subset_alerta$date)) |>
         lubridate::force_tz("America/Sao_Paulo") |>
         format(format = "%d/%m/%Y %H:%Mh")
-
       unidade <- " µg/m³"
-
       iqa <- IQA_last24H$AQI[IQA_last24H$Cidade == subset_alerta$Cidade]
-
       qualidade <- IQA_last24H$AQI_Qualidade[IQA_last24H$Cidade == subset_alerta$Cidade] |>
         stringr::str_to_upper()
 
       out[[i]]$Cidade <- subset_alerta$Cidade
-
-      #current_value <- ifelse((subset_alerta$limite >= 1 | qualidade != "BOA"), 1, 0)
       current_value <- ifelse(excede >= 1, 1, 0)
 
-      if (current_value >= threshold) {
-
-        message <- paste0(
-          "\n🌬 Poluente: \n   ",
-          particulas,": ", valor, unidade,
+      message <- if (current_value >= threshold) {
+        paste0(
+          "\n🌬 Poluente: \n   ", particulas, ": ", valor, unidade,
           "\n🗓 Registro: ", registro,
-          "\n🚨 ALERTA: Valor excede o limite recomendado!")
-
+          "\n🚨 ALERTA: Valor excede o limite recomendado!"
+        )
       } else {
-
-        message <- paste0(
-          "\n🌬 Poluente: \n   ",
-          particulas,": ", valor, unidade,
+        paste0(
+          "\n🌬 Poluente: \n   ", particulas, ": ", valor, unidade,
           "\n🗓 Registro: ", registro,
-          "\n✅ Valor dentro do limite recomendado.\n")
+          "\n✅ Valor dentro do limite recomendado.\n"
+        )
       }
 
+      out[[i]]$message <- message
 
     } else {
 
@@ -172,71 +164,58 @@ for (i in 1:nrow(IQA_last24H)) {
         dplyr::mutate(pollutant = replace(pollutant, pollutant == 'PM2.5', "MP2.5"),
                       pollutant = replace(pollutant, pollutant == 'PM10', "MP10"))
 
+      if (nrow(subset_alerta) == 0) next  # Skip if empty
+
+      if (is.null(out[[i]])) out[[i]] <- list()  # Ensure the list exists
+
       excede <- sum(subset_alerta$limite, na.rm = T)
 
-      valor <- subset_alerta$concentration[j]
+      if (j > nrow(subset_alerta)) next  # Avoid out-of-bounds error
 
+      valor <- subset_alerta$concentration[j]
       registro <- lubridate::ymd_hms(subset_alerta$date)[j] |>
         lubridate::force_tz("America/Sao_Paulo") |>
         format(format = "%d/%m/%Y %H:%Mh")
 
-      unidade <- ifelse(subset_alerta$pollutant[j] == "CO",
-                        " mg/m³", " µg/m³")
-
+      unidade <- ifelse(subset_alerta$pollutant[j] == "CO", " mg/m³", " µg/m³")
       Cidade <- subset_alerta$Cidade |> unique()
-
       iqa <- IQA_last24H$AQI[IQA_last24H$Cidade == Cidade]
-
       qualidade <- IQA_last24H$AQI_Qualidade[IQA_last24H$Cidade == Cidade] |>
         stringr::str_to_upper()
 
       out[[i]]$Cidade <- Cidade
-
-      #current_value <- ifelse((excede >= 1 | qualidade != "BOA"), 1, 0)
       current_value <- ifelse(excede >= 1, 1, 0)
 
-
-      if (current_value >= threshold) {
-
-        message <- paste0(
-          "\n Poluente: \n 🌬  ", subset_alerta$pollutant[4],
-          ":  ", subset_alerta$concentration[4], " ", unidade,
-          "\n 🌬  ", subset_alerta$pollutant[5],
-          ":  ", subset_alerta$concentration[5], " ", unidade,
-          "\n 🌬  ", subset_alerta$pollutant[1],
-          ":  ", subset_alerta$concentration[1], " ", unidade,
-          "\n 🌬  ", subset_alerta$pollutant[3],
-          ":  ", subset_alerta$concentration[3], " ", unidade,
-          "\n 🌬  ", subset_alerta$pollutant[6],
-          ":  ", subset_alerta$concentration[6], " ", unidade,
-          "\n 🌬  ", subset_alerta$pollutant[2],
-          ":  ", subset_alerta$concentration[2], " ", unidade,
+      message <- if (current_value >= threshold) {
+        paste0(
+          "\n Poluente: \n 🌬  ", subset_alerta$pollutant[4], ":  ", subset_alerta$concentration[4], " ", unidade,
+          "\n 🌬  ", subset_alerta$pollutant[5], ":  ", subset_alerta$concentration[5], " ", unidade,
+          "\n 🌬  ", subset_alerta$pollutant[1], ":  ", subset_alerta$concentration[1], " ", unidade,
+          "\n 🌬  ", subset_alerta$pollutant[3], ":  ", subset_alerta$concentration[3], " ", unidade,
+          "\n 🌬  ", subset_alerta$pollutant[6], ":  ", subset_alerta$concentration[6], " ", unidade,
+          "\n 🌬  ", subset_alerta$pollutant[2], ":  ", subset_alerta$concentration[2], " ", unidade,
           "\n🗓 Registro: ", registro,
-          "\n🚨 ALERTA: Valor(es) excede(m) o limite recomendado!\n")
+          "\n🚨 ALERTA: Valor(es) excede(m) o limite recomendado!\n"
+        )
       } else {
-        message <- paste0(
-          "\n Poluente: \n 🌬  ", subset_alerta$pollutant[4],
-          ":  ", subset_alerta$concentration[4], " ", unidade,
-          "\n 🌬  ", subset_alerta$pollutant[5],
-          ":  ", subset_alerta$concentration[5], " ", unidade,
-          "\n 🌬  ", subset_alerta$pollutant[1],
-          ":  ", subset_alerta$concentration[1], " ", unidade,
-          "\n 🌬  ", subset_alerta$pollutant[3],
-          ":  ", subset_alerta$concentration[3], " ", unidade,
-          "\n 🌬  ", subset_alerta$pollutant[6],
-          ":  ", subset_alerta$concentration[6], " ", unidade,
-          "\n 🌬  ", subset_alerta$pollutant[2],
-          ":  ", subset_alerta$concentration[2], " ", unidade,
+        paste0(
+          "\n Poluente: \n 🌬  ", subset_alerta$pollutant[4], ":  ", subset_alerta$concentration[4], " ", unidade,
+          "\n 🌬  ", subset_alerta$pollutant[5], ":  ", subset_alerta$concentration[5], " ", unidade,
+          "\n 🌬  ", subset_alerta$pollutant[1], ":  ", subset_alerta$concentration[1], " ", unidade,
+          "\n 🌬  ", subset_alerta$pollutant[3], ":  ", subset_alerta$concentration[3], " ", unidade,
+          "\n 🌬  ", subset_alerta$pollutant[6], ":  ", subset_alerta$concentration[6], " ", unidade,
+          "\n 🌬  ", subset_alerta$pollutant[2], ":  ", subset_alerta$concentration[2], " ", unidade,
           "\n🗓 Registro: ", registro,
-          "\n✅ Valor dentro do limite recomendado.\n")
+          "\n✅ Valor dentro do limite recomendado.\n"
+        )
       }
-    }
 
-    out[[i]]$message <- message
+      out[[i]]$message <- message
+    }
   }
+
   out[[i]]$qualidade <- paste0("\n *Qualidade do Ar* (IQA): \n *", qualidade, "* nas últimas 24h ⚠️")
 }
-
 
 # Unificando o dataset
 
