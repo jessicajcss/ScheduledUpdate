@@ -94,7 +94,16 @@ IQA_last24H <- IQA_last24H |>
 # Simulated value (replace with real data)
 threshold <- 1
 
-out <- vector("list", length(unique(alerta$pollutant))) # vetor com o correspondente numero de variaveis meteorologicas
+if (length(unique(alerta$pollutant)) > 1) {
+
+  out <- vector("list", length(unique(alerta$pollutant))) # vetor com o correspondente numero de variaveis meteorologicas
+
+  } else {
+
+  out <- vector("list",
+                1) # vetor com o correspondente numero de variaveis meteorologicas
+
+  }
 
 IQA_last24H <- dplyr::filter(IQA_last24H, !is.na(Cidade))
 
