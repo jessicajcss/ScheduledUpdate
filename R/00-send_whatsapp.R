@@ -10,7 +10,7 @@ whapi_token <- Sys.getenv("WHAPI_TOKEN")
 
 
 #### 1ª Mensagem = intro
-observacao <- "\n 🧾 *Boletim de Qualidade do Ar \n(Lab-Air, UFPR)* \n"
+observacao <- "\n 🧾 *Boletim de Qualidade do Ar* \n*(Lab-Air, UFPR)* \n"
 
 
 #### 3ª Mensagem = referência
@@ -41,6 +41,8 @@ output2<- dplyr::bind_rows(out2)
 
 texto_value <- paste(output2$texto, collapse = " ")
 
+# changing divisor decimal de valores de '.' por ','
+texto_value <- gsub("(?<=\\d)\\.(?=\\d)", ",", texto_value, perl = TRUE)
 
 message <- paste0(observacao,
                   texto_value,
