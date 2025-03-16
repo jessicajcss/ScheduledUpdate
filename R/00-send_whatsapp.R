@@ -14,7 +14,7 @@ observacao <- "\n 🧾 *Boletim de Qualidade do Ar* \n*(Lab-Air, UFPR)* \n"
 
 
 #### 3ª Mensagem = referência
-cidades_thermo <- data_thermo_instantaneo$Cidade[data_thermo_instantaneo$date == hoje]
+cidades_thermo <- data_thermo_instantaneo$Cidade[as.Date(lubridate::force_tz(data_thermo_instantaneo$date, tz = "America/Sao_Paulo")) == (as.Date(lubridate::force_tz(hoje, tz = "America/Sao_Paulo")))]
 
 if ("Almirante Tamandaré" %in% cidades_thermo & "Rio Branco do Sul" %in% cidades_thermo) {
   referencia <- "\n🔎 Obs.: Valores registrados por sensor da Thermo GM-5000 em Almirante Tamandaré e Rio Branco do Sul, e sensores PurpleAir nas demais cidades. \n 🧐 Mais informações: https://rmcqualidadedoar.shinyapps.io/dados/ "
