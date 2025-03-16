@@ -6,7 +6,7 @@ on:
   schedule:
     #- cron: '0 * * * *'  # Runs every hour
     - cron: '0 9-23 * * *'  # Runs every hour from 9 AM to 11 PM UTC
-    - cron: '0 0-3 * * *'   # Runs every hour from 12 AM to 3 AM UTC
+  #  - cron: '0 0-3 * * *'   # Runs every hour from 12 AM to 3 AM UTC
   workflow_dispatch:  # Allows manual execution
 
 jobs:
