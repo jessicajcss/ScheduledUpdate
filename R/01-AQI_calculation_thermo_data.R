@@ -257,7 +257,7 @@ library(lubridate)
 library(zoo)
 
 w <- 8
-air_quality_data2 <- dataaggfinal %>%
+air_quality_data <- dataaggfinal %>%
   select(Cidade, date, SO2, NO2, O3, CO, PM2.5, PM10) %>%
   pivot_longer(cols = SO2:PM10, names_to = "variable", values_to = "value") %>%
   mutate(variable = factor(variable, levels = c("SO2", "NO2", "O3", "CO", "PM10", "PM2.5"))) %>%
