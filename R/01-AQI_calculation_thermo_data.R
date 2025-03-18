@@ -300,6 +300,5 @@ air_quality_data <- dataaggfinal %>%
     AQI_Qualidade = sapply(AQI, AQI_Qualidade)  # Adjusted to use sapply for vectorized application
   )
 
-summary(air_quality_data2)
 
 save(air_quality_data, file="./data/air_quality_data.Rda")
