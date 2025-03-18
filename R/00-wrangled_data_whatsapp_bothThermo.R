@@ -29,6 +29,9 @@ if (lubridate::hour(hoje_hora) != 0) {
 
 }
 
+# to test:
+## hoje_hora <- lubridate::ymd_hms("2025-03-17 11:00:00")  |> lubridate::force_tz("America/Sao_Paulo")
+## hoje <- as.Date("2025-03-17") |> lubridate::force_tz("America/Sao_Paulo")
 
 
 # THERMO data in real time, in ug/m³ and mg/m³ (CO)
@@ -47,7 +50,7 @@ if (hoje %in% data_thermo_instantaneo$date[data_thermo_instantaneo$Cidade == "Ri
     dplyr::select(Cidade, date, PM2.5) |>
     subset(Cidade != "Rio Branco do Sul") #& Cidade != "Almirante Tamandaré")
 
-  } else {
+} else {
 
   data_purpleair_instantaneo <- data_purpleair_instantaneo |>
     dplyr::select(Cidade, date, PM2.5)
@@ -147,13 +150,13 @@ threshold <- 1
 
 #if (length(unique(alerta$pollutant)) > 1) {
 
- # out <- vector("list", length(unique(alerta$pollutant))) # vetor com o correspondente numero de variaveis meteorologicas
+# out <- vector("list", length(unique(alerta$pollutant))) # vetor com o correspondente numero de variaveis meteorologicas
 
-  #} else {
+#} else {
 
-  # out <- vector("list",  1) # vetor com o correspondente numero de variaveis meteorologicas
+# out <- vector("list",  1) # vetor com o correspondente numero de variaveis meteorologicas
 
-  #}
+#}
 
 IQA_last24H <- dplyr::filter(IQA_last24H, !is.na(Cidade))
 
@@ -190,6 +193,7 @@ for (i in 1:nrow(IQA_last24H)) {
       qualidade <- IQA_last24H$AQI_Qualidade[IQA_last24H$Cidade == subset_alerta$Cidade] |>
         stringr::str_to_upper()
 
+
       out[[i]]$Cidade <- subset_alerta$Cidade
       current_value <- ifelse(excede >= 1, 1, 0)
 
@@ -208,6 +212,7 @@ for (i in 1:nrow(IQA_last24H)) {
       }
 
       out[[i]]$message <- message
+      out[[i]]$qualidade <- paste0("\n *Qualidade do Ar* (IQA): \n *", qualidade, "* nas últimas 24h ⚠️")
 
     } else {
 
@@ -263,14 +268,15 @@ for (i in 1:nrow(IQA_last24H)) {
       }
 
       out[[i]]$message <- message
+      out[[i]]$qualidade <- paste0("\n *Qualidade do Ar* (IQA): \n *", qualidade, "* nas últimas 24h ⚠️")
+
     }
   }
 
-  out[[i]]$qualidade <- paste0("\n *Qualidade do Ar* (IQA): \n *", qualidade, "* nas últimas 24h ⚠️")
+#  out[[i]]$qualidade <- paste0("\n *Qualidade do Ar* (IQA): \n *", qualidade, "* nas últimas 24h ⚠️")
 }
 
 # Unificando o dataset
 
 output <- dplyr::bind_rows(out)
-
 
