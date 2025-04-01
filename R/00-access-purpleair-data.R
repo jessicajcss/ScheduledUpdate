@@ -258,5 +258,8 @@ load(file = "./data/data_purpleair.Rda")
 
 #unifying datasets
 
-data_purpleair <- rbind(data_purpleair, data_purpleair_new) %>% unique()
+data_purpleair <- rbind(data_purpleair, data_purpleair_new) %>%
+  unique() %>%
+  subset(PM2.5 <= 100) #REMOVING VALUES SUPPOSEDLY OFF CHARTS
+
 save(data_purpleair, file = "./data/data_purpleair.Rda")
