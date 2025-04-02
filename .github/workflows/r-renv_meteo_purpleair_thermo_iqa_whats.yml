@@ -56,10 +56,10 @@ jobs:
         shell: Rscript {0}
 
       # execute Rscript
-      - name: Execute Script
-        run: |
-          source("R/00-access-plugfield-data.R")
-        shell: Rscript {0}
+ #     - name: Execute Script
+   #     run: |
+       #   source("R/00-access-plugfield-data.R")
+     #   shell: Rscript {0}
 
       - name: Execute Script
         run: |
