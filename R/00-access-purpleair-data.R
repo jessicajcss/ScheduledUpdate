@@ -244,6 +244,7 @@ data_purpleair_new <- data_purpleair %>%
   dplyr::mutate(sample_day = as.Date(date, format = "%Y-%m-%d", tz = "America/Sao_Paulo")) %>%
   dplyr::select(-date) %>%
   drop_na() %>%
+  subset(PM2.5 <= 100) %>% #REMOVING VALUES SUPPOSEDLY OFF CHARTS 
   dplyr::group_by(Cidade, sample_day) %>%
   dplyr::mutate(PM2.5 = mean(PM2.5, na.rm = T)) %>%
   unique() %>%
@@ -259,7 +260,6 @@ load(file = "./data/data_purpleair.Rda")
 #unifying datasets
 
 data_purpleair <- rbind(data_purpleair, data_purpleair_new) %>%
-  unique() %>%
-  subset(PM2.5 <= 100) #REMOVING VALUES SUPPOSEDLY OFF CHARTS
+  unique() 
 
 save(data_purpleair, file = "./data/data_purpleair.Rda")
