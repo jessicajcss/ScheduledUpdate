@@ -1,7 +1,8 @@
 #Adaptation of US EPA according to
 ## https://community.purpleair.com/t/how-to-calculate-the-us-epa-pm2-5-aqi/877/12
 ## https://document.airnow.gov/technical-assistance-document-for-the-reporting-of-daily-air-quailty.pdf
-## Last update: 2024-08-23
+## Previous update: 2024-08-23
+## Last update: 2025-04-08
 
 #  --------------------------------------------------------------------------------------------------------
 #                                              AQI FUNCTIONS
@@ -43,7 +44,7 @@ AQI_Qualidade <- function(aqi) {
   } else if (aqi >= 0) {
     return("Boa")            # Good
   } else {
-    return(NA)
+    return("Boa") # corrigido de NA, considerando erro em alguns momentos qie haviam valores de AQI, mas não de qualidade 2025-04-08
   }
 }
 
