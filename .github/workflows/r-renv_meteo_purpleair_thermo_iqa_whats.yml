@@ -66,10 +66,10 @@ jobs:
           source("R/00-access-purpleair-data.R")
         shell: Rscript {0}
 
-      - name: Execute Script
-        run: |
-          source("R/00-access-INMET_API-data.R")
-        shell: Rscript {0}
+#      - name: Execute Script
+ #       run: |
+  #        source("R/00-access-INMET_API-data.R")
+   #     shell: Rscript {0}
 
       - name: Execute Script
         run: |
