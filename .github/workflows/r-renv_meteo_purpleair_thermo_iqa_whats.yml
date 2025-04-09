@@ -71,10 +71,10 @@ jobs:
   #        source("R/00-access-INMET_API-data.R")
    #     shell: Rscript {0}
 
-      - name: Execute Script
-        run: |
-          source("R/01-meteo_hour.R")
-        shell: Rscript {0}
+ #     - name: Execute Script
+  #      run: |
+   #       source("R/01-meteo_hour.R")
+    #    shell: Rscript {0}
 
       - name: Execute Script
         run: |
