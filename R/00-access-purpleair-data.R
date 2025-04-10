@@ -197,7 +197,7 @@ AQI_Qualidade <- function(aqi) {
   } else if (aqi >= 0) {
     return("Boa")            # Good
   } else {
-    return("Boa") # corrigido de NA, considerando erro em alguns momentos qie haviam valores de AQI, mas não de qualidade 2025-04-08
+    return(NA) # corrigido de NA, considerando erro em alguns momentos qie haviam valores de AQI, mas não de qualidade 2025-04-08
   }
 }
 
