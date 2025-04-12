@@ -4,9 +4,7 @@ name: run_job_scripts_Meteo_QualidadeDoAr
 
 on:
   schedule:
-    #- cron: '0 * * * *'  # Runs every hour
     - cron: '0 9-23 * * *'  # Runs every hour from 9 AM to 11 PM UTC
-  #  - cron: '0 0-3 * * *'   # Runs every hour from 12 AM to 3 AM UTC
   workflow_dispatch:  # Allows manual execution
 
 jobs:
@@ -14,16 +12,16 @@ jobs:
     runs-on: ubuntu-latest  # Faster than Windows
 
     env:
-        apikey: ${{ secrets.APIKEY}}
-        apisecretkey: ${{ secrets.APISECRETKEY}}
-        access_token: ${{ secrets.ACCESS_TOKEN}}
-        access_token_secret: ${{ secrets.ACCESS_TOKEN_SECRET}}
-        GITHUB_PAT: ${{ secrets.MY_GITHUB_PAT }}
-        PLUG_API: ${{ secrets.PLUG_API }}
-        PLUG_AUTH: ${{ secrets.PLUG_AUTH }}
-        PURPLEAIR_API: ${{ secrets.PURPLEAIR_API }}
-        INMET_TOKEN: ${{ secrets.INMET_TOKEN }}
-        RENV_PATHS_ROOT: ~/.local/share/renv
+      apikey: ${{ secrets.APIKEY }}
+      apisecretkey: ${{ secrets.APISECRETKEY }}
+      access_token: ${{ secrets.ACCESS_TOKEN }}
+      access_token_secret: ${{ secrets.ACCESS_TOKEN_SECRET }}
+      GITHUB_PAT: ${{ secrets.MY_GITHUB_PAT }}
+      PLUG_API: ${{ secrets.PLUG_API }}
+      PLUG_AUTH: ${{ secrets.PLUG_AUTH }}
+      PURPLEAIR_API: ${{ secrets.PURPLEAIR_API }}
+      INMET_TOKEN: ${{ secrets.INMET_TOKEN }}
+      RENV_PATHS_ROOT: ~/.local/share/renv
 
     steps:
       - name: Checkout repository
@@ -31,8 +29,6 @@ jobs:
 
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
-        with:
-              r-version: '4.3.2'
 
       - name: Set up renv
         uses: r-lib/actions/setup-renv@v2
@@ -48,6 +44,11 @@ jobs:
       - name: Check if cache restored
         run: ls -lah ${{ env.RENV_PATHS_ROOT }} || echo "Cache not restored"
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev
+
       - name: Ensure renv is installed
         run: |
           if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
@@ -57,21 +58,10 @@ jobs:
         run: renv::restore()
         shell: Rscript {0}
 
-      # execute Rscript
- #     - name: Execute Script
-   #     run: |
-       #   source("R/00-access-plugfield-data.R")
-     #   shell: Rscript {0}
-
       - name: Execute Script
         run: |
           source("R/00-access-purpleair-data.R")
         shell: Rscript {0}
-
-#      - name: Execute Script
- #       run: |
-  #        source("R/00-access-INMET_API-data.R")
-   #     shell: Rscript {0}
 
       - name: Execute Script
         run: |
@@ -93,7 +83,6 @@ jobs:
           source("R/01-AQI_calculation_thermo_data.R")
         shell: Rscript {0}
 
-      # --- Auto-commit and push changes to data files ---
       - name: Force commit and push any changes
         run: |
           git config --global user.email "github-actions@github.com"
@@ -102,14 +91,6 @@ jobs:
           git commit -m "Auto-commit updated data files [skip ci]" || echo "No changes to commit"
           git pull --rebase origin main || git rebase --abort  # Prevent merge conflicts
           git push --force origin main  # Overwrite remote version
-   #   - name: Commit and push any changes
-    #    run: |
-     #     git config --global user.email "github-actions@github.com"
-      #    git config --global user.name "GitHub Actions"
-       #   git add data/*.Rda data/meteo/*.Rda data_raw/*.Rda || echo "No changes to add"
-        #  git commit -m "Auto-commit updated data files [skip ci]" || echo "No changes to commit"
-         # git pull origin main --rebase
-          #git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
