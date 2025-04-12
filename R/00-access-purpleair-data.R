@@ -233,7 +233,7 @@ aqiFromPM25 <- function(pm) {
 # Matching thermo data X legislation
 
 data_purpleair_instantaneo <- data_purpleair |>
-  subset(PM2.5 <= 100) %>% #REMOVING VALUES SUPPOSEDLY OFF CHARTS
+  subset(PM2.5 <= 100) #REMOVING VALUES SUPPOSEDLY OFF CHARTS
 
 save(data_purpleair_instantaneo, file = "./data/data_purpleair_instantaneo.Rda")
 
