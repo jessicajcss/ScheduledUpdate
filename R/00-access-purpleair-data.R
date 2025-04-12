@@ -238,7 +238,6 @@ data_purpleair_instantaneo <- data_purpleair |>
 save(data_purpleair_instantaneo, file = "./data/data_purpleair_instantaneo.Rda")
 
 
-View(data_purpleair_instantaneo)
 
 # Matching thermo data X legislation
 
