@@ -34,6 +34,11 @@ jobs:
         
       - name: Install system dependencies #
         run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
+
+      - name: Install system dependencies #
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev libfontconfig1-dev
     
       - name: Install R packages #
         run: |
