@@ -1,5 +1,5 @@
 #### Acessing Purpleair data and scheduling its update
-### Last update: 2025-03-04
+### Last update: 2025-04-12
 ## By: Santos-Silva, J. C.
 
 options("menu.graphics" = FALSE)
@@ -225,7 +225,7 @@ aqiFromPM25 <- function(pm) {
   } else if (pm >= 0) {
     return(calcAQI(pm, 50, 0, 9, 0))            # Good
   } else {
-    return(NA) # corrigido de NA, considerando erro em alguns momentos qie haviam valores de AQI, mas não de qualidade 2025-04-08
+    return(NA)
   }
 }
 

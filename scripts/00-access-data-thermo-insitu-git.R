@@ -16,7 +16,7 @@ data_thermo_insitu <- data_thermo
 # adicionar novas planilhas de campo
 
 #Dados em tempo local, mas lidos em UTC
-
+#salvar novos arquivos insitu nessa pasta, para então puxar aqui
 temp <- list.files(path = "./data_raw/sensores_thermo",
                    pattern = "*.csv") # listar arquivos .csv do diretório
 
@@ -31,8 +31,12 @@ myfiles <- lapply(temp.qualified,
 colnames(myfiles[[1]]) == colnames(myfiles[[4]])
 colnames(myfiles[[4]]) <- colnames(myfiles[[1]])
 
+colnames(myfiles[[1]]) == colnames(myfiles[[5]])
+colnames(myfiles[[5]]) <- colnames(myfiles[[1]])
+
 # unificar planilhas de dados
 data_thermo_new <- do.call("rbind", myfiles)
+View(data_thermo_new)
 colnames(data_thermo_insitu) <- colnames(data_thermo_new)
 data_thermo <- rbind(data_thermo_insitu, data_thermo_new[, c(1:21)]) |>
   unique()
@@ -58,10 +62,13 @@ colnames(data_thermo_insitu) <- c('Cidade','date','SO2', 'NO2', 'O3', 'CO', 'PM2
 save(data_thermo_insitu, file = "./data_raw/wrangled_data_insitu_thermo.Rda")
 
 
+## see line 190
 
 #################### TO COMPARE WITH WHO, 2021 AQG
 
 # https://www.breeze-technologies.de/blog/air-pollution-how-to-convert-between-mgm3-%C2%B5gm3-ppm-ppb/
+
+library(tidyverse)
 
 data_thermo_converted <- data_thermo_insitu %>%
   mutate(CO = CO*1.15, #from ppm to mg/m³
@@ -180,9 +187,10 @@ save(file_path, file="./data_raw/file_path.Rda")
 
 #################################################################
 ########## UNIFICANDO BANCOS DE DADOS 'BASE' IN SITU & GIT
-
+## use this when repository data is updated
 #load(file="./data/data_thermo_update.Rda")
 
 data_thermo <- rbind(data_thermo_insitu, data_thermo) |> unique()
+View(data_thermo)
 save(data_thermo, file="./data_raw/data_thermo.Rda")
 
