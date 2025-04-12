@@ -35,6 +35,13 @@ jobs:
       - name: Set up renv
         uses: r-lib/actions/setup-renv@v2
 
+      - name: Install system dependencies #
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
+    
+      - name: Install R packages
+        run: |
+            Rscript -e "install.packages('curl')" #
+            
       - name: Cache renv packages
         uses: actions/cache@v4
         with:
@@ -45,13 +52,6 @@ jobs:
 
       - name: Check if cache restored
         run: ls -lah ${{ env.RENV_PATHS_ROOT }} || echo "Cache not restored"
-
-      - name: Install system dependencies #
-        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
-    
-      - name: Install R packages
-        run: |
-            Rscript -e "install.packages('curl')" #
 
       - name: Ensure renv is installed
         run: |
