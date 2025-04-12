@@ -46,6 +46,13 @@ jobs:
       - name: Check if cache restored
         run: ls -lah ${{ env.RENV_PATHS_ROOT }} || echo "Cache not restored"
 
+      - name: Install system dependencies #
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
+    
+      - name: Install R packages
+        run: |
+            Rscript -e "install.packages('curl')" #
+
       - name: Ensure renv is installed
         run: |
           if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
