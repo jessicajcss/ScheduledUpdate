@@ -225,7 +225,7 @@ aqiFromPM25 <- function(pm) {
   } else if (pm >= 0) {
     return(calcAQI(pm, 50, 0, 9, 0))            # Good
   } else {
-    return(NA)
+    return(0) # correct NA IQA
   }
 }
 
