@@ -133,9 +133,6 @@ if (hoje %in% data_thermo_instantaneo$date[data_thermo_instantaneo$Cidade == "Al
 # unificando dados sensores
 IQA_last24H <- dplyr::bind_rows(thermo_iqa, purpleair_iqa)
 
-Cidades <- IQA_last24H$Cidade |>
-  unique() |>
-  sort()
 
 IQA_last24H <- IQA_last24H |>
   dplyr::mutate(date = lubridate::force_tz(sample_day, tz = "America/Sao_Paulo")) |>
@@ -159,6 +156,11 @@ threshold <- 1
 #}
 
 IQA_last24H <- dplyr::filter(IQA_last24H, !is.na(Cidade))
+
+Cidades <- IQA_last24H$Cidade |>
+  unique() |>
+  sort()
+
 
 print(dim(IQA_last24H))  # <-- Isso imprimirá (número de linhas, número de colunas)
 
