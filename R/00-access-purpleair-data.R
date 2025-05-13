@@ -1,7 +1,7 @@
 #### Acessing Purpleair data and scheduling its update
-### Last update: 2025-04-12
+### Last update: 2025-05-12
 ## By: Santos-Silva, J. C.
-
+##£ ajustar!!!
 options("menu.graphics" = FALSE)
 
 conflicted::conflicts_prefer(dplyr::filter)
@@ -241,7 +241,8 @@ save(data_purpleair_instantaneo, file = "./data/data_purpleair_instantaneo.Rda")
 
 # Matching thermo data X legislation
 
-data_purpleair_new <- data_purpleair   %>%
+###£data_purpleair_new <- data_purpleair   %>%
+data_purpleair <- data_purpleair   %>%
   dplyr::mutate(PM2.5 = ifelse(PM2.5 < -100, NA, PM2.5))  %>%
   dplyr::mutate(PM2.5 = ifelse(PM2.5 < -0, 0, PM2.5)) %>%
   select(Cidade, Tipo, sensor_id, date, PM2.5) %>%
@@ -260,12 +261,12 @@ data_purpleair_new <- data_purpleair   %>%
   dplyr::mutate_all(~ ifelse(. < -0, 0, .))
 
 
-load(file = "./data/data_purpleair.Rda")
+###£load(file = "./data/data_purpleair.Rda")
 
 #unifying datasets
 
-data_purpleair <- rbind(data_purpleair, data_purpleair_new) %>%
-  unique()
+###£data_purpleair <- rbind(data_purpleair, data_purpleair_new) %>%
+ ###£ unique()
 
 save(data_purpleair, file = "./data/data_purpleair.Rda")
 
