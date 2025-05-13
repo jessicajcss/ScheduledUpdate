@@ -157,7 +157,7 @@ threshold <- 1
 
 IQA_last24H <- dplyr::filter(IQA_last24H, !is.na(Cidade))
 
-Cidades <- IQA_last24H$Cidade |>
+Cidades <- IQA_last24H$Cidade |> # realocado aqui
   unique() |>
   sort()
 
