@@ -33,7 +33,7 @@ variaveis <- c("latitude, longitude, humidity, temperature,
 todos_purpleair <- getPurpleairApiHistory(
   sensorIndex    = sensor_id,
   apiReadKey     = purpleair_api, #https://develop.purpleair.com/keys ### AJUSTA AQUI
-  startTimeStamp = Sys.time() - 86400, ### AJUSTA AQUI
+  startTimeStamp = Sys.time() - 86400,#*365*2, ### AJUSTA AQUI
   endTimeStamp   = Sys.time(), ### AJUSTA AQUI
   average        = "0", ### em tempo real
   fields         = variaveis)
@@ -241,7 +241,9 @@ save(data_purpleair_instantaneo, file = "./data/data_purpleair_instantaneo.Rda")
 
 # Matching thermo data X legislation
 
-data_purpleair_new <- data_purpleair %>%
+data_purpleair_new <- data_purpleair   %>%
+  dplyr::mutate(PM2.5 = ifelse(PM2.5 < -100, NA, PM2.5))  %>%
+  dplyr::mutate(PM2.5 = ifelse(PM2.5 < -0, 0, PM2.5)) %>%
   select(Cidade, Tipo, sensor_id, date, PM2.5) %>%
   dplyr::mutate(sample_day = as.Date(date, format = "%Y-%m-%d", tz = "America/Sao_Paulo")) %>%
   dplyr::select(-date) %>%
@@ -254,7 +256,8 @@ data_purpleair_new <- data_purpleair %>%
   dplyr::rowwise() %>%
   dplyr::mutate(AQI_PM2.5 = aqiFromPM25(PM2.5),
                 AQI_Qualidade = ifelse(!is.na(AQI_PM2.5), AQI_Qualidade(AQI_PM2.5), NA))  %>%
-  dplyr::mutate_all(~ ifelse(. < 0, NA, .))
+  dplyr::mutate_all(~ ifelse(. < -100, NA, .))  %>%
+  dplyr::mutate_all(~ ifelse(. < -0, 0, .))
 
 
 load(file = "./data/data_purpleair.Rda")
