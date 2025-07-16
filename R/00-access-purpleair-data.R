@@ -19,7 +19,7 @@ sensor_id <-  c('175095', '175099', '175101', '175103',
                 '175109', '175115', '175121', '175123',
                 '175235', '175393', '175395', '175387',
                 '175403', '175407', '175451',
-                '91267', '99667')
+                '91267', '99667', '206341')
 
 #Mais informações em https://api.purpleair.com/
 variaveis <- c("latitude, longitude, humidity, temperature,
@@ -84,7 +84,8 @@ purpleair <- purpleair %>%
          sensor_id = case_when(sensor_id == '175403' & date <= "2023-09-25 00:00:00" ~ NA, TRUE ~ sensor_id),
          sensor_id = case_when(sensor_id == '175407' & date <= "2023-06-06 00:00:00" ~ NA, TRUE ~ sensor_id),
          sensor_id = case_when(sensor_id == '175411' & date <= "2023-10-19 00:00:00" ~ NA, TRUE ~ sensor_id),
-         sensor_id = case_when(sensor_id == '175451' & date <= "2023-09-14 00:00:00" ~ NA, TRUE ~ sensor_id))
+         sensor_id = case_when(sensor_id == '175451' & date <= "2023-09-14 00:00:00" ~ NA, TRUE ~ sensor_id),
+         sensor_id = case_when(sensor_id == '206341' & date <= "2025-03-01 00:00:00" ~ NA, TRUE ~ sensor_id))
 
 purpleair <- purpleair %>%
   dplyr::filter(!is.na(sensor_id))
@@ -114,6 +115,7 @@ data_purpleair <- purpleair %>%
                             sensor_id == "175403" ~ "Campo Largo",
                             sensor_id == "175407" ~ "Colombo",
                             sensor_id == "175451" ~ "Itaperuçú",
+                            sensor_id == '206341' ~ "Rio Branco do Sul",
                             TRUE ~ sensor_id),
          Tipo = case_when(sensor_id == '91267' ~ "outdoor",
                           sensor_id == '99667' ~ "outdoor",
@@ -133,6 +135,7 @@ data_purpleair <- purpleair %>%
                           sensor_id == "175403" ~ "outdoor",
                           sensor_id == "175407" ~ "outdoor",
                           sensor_id == "175451" ~ "outdoor",
+                          sensor_id == '206341' ~ "outdoor",
                           TRUE ~ NA),
          sensor_id = case_when(sensor_id == '91267' ~ "Dona Suzana",
                                sensor_id == '99667' ~ "Escola Hans",
@@ -152,6 +155,7 @@ data_purpleair <- purpleair %>%
                                sensor_id == "175403" ~ "SMMA",
                                sensor_id == "175407" ~ "Embrapa",
                                sensor_id == "175451" ~ "Pombas",
+                               sensor_id == "206341" ~ "SEMMA",
                                TRUE ~ sensor_id))
 
 
