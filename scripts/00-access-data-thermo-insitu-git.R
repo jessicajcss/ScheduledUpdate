@@ -35,7 +35,8 @@ colnames(myfiles[[1]]) == colnames(myfiles[[5]])
 colnames(myfiles[[5]]) <- colnames(myfiles[[1]])
 
 # unificar planilhas de dados
-data_thermo_new <- do.call("rbind", myfiles)
+library(tidyverse)
+data_thermo_new <- do.call("bind_rows", myfiles)
 View(data_thermo_new)
 colnames(data_thermo_insitu) <- colnames(data_thermo_new)
 data_thermo <- rbind(data_thermo_insitu, data_thermo_new[, c(1:21)]) |>
