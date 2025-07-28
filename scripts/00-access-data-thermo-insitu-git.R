@@ -39,7 +39,7 @@ library(tidyverse)
 data_thermo_new <- do.call("bind_rows", myfiles)
 View(data_thermo_new)
 colnames(data_thermo_insitu) <- colnames(data_thermo_new)
-data_thermo <- rbind(data_thermo_insitu, data_thermo_new[, c(1:21)]) |>
+data_thermo <- bind_rows(data_thermo_insitu, data_thermo_new[, c(1:21)]) |>
   unique()
 
 data_thermo_insitu <- data_thermo |>
@@ -190,8 +190,9 @@ save(file_path, file="./data_raw/file_path.Rda")
 ########## UNIFICANDO BANCOS DE DADOS 'BASE' IN SITU & GIT
 ## use this when repository data is updated
 #load(file="./data/data_thermo_update.Rda")
-
-data_thermo <- rbind(data_thermo_insitu, data_thermo) |> unique()
+library(tidyverse)
+data_thermo <- bind_rows(data_thermo_insitu, data_thermo) |> unique()
 View(data_thermo)
 save(data_thermo, file="./data_raw/data_thermo.Rda")
 
+save(data_thermo, file="./data/data_thermo.Rda")
