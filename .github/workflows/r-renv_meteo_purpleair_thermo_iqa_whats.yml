@@ -3,8 +3,8 @@
 name: run_job_scripts_Meteo_QualidadeDoAr
 
 on:
-  schedule:
-    - cron: '0 9-23 * * *'  # Runs every hour from 9 AM to 11 PM UTC
+ # schedule:
+ #   - cron: '0 9-23 * * *'  # Runs every hour from 9 AM to 11 PM UTC
   workflow_dispatch:  # Allows manual execution
 
 jobs:
