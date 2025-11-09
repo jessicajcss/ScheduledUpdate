@@ -99,9 +99,9 @@ colnames(data_git) <- c('Cidade','date','SO2', 'NO2', 'O3', 'CO', 'PM2.5','PM10'
 
 # Loading previou full dataset
 
-load("./data/data_thermo.Rda")
+load("./data/data_thermo_update.Rda") # last update insitu data out.2025
 
-data_thermo <- rbind(data_thermo, data_git) |>
+data_thermo <-  data_thermo |>
   unique() |>
   dplyr::arrange(date)
 
