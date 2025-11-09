@@ -33,7 +33,6 @@
 
 ### Checking for Data integrity ----
 
-#source("./scripts/00-preprocessing_thermo_GitHub_data.R")
 #load(url("https://github.com/jessicajcss/ScheduledUpdate/raw/refs/heads/main/data/data_thermo_update.Rda"))
 load("./data/data_thermo_update.Rda")
 
@@ -114,7 +113,7 @@ h <- 1 # aggregate to every h hours
 
 missing_dataagg <- data_thermo |>
   dplyr::mutate(Cidade = as.factor(Cidade)) |>
-  dplyr::group_by(date = lubridate::floor_date(date, '1 hour')) |>
+  dplyr::group_by(Cidade, date = lubridate::floor_date(date, '1 hour')) |>
   dplyr::filter(!is.na(PM2.5))  |>
   dplyr::count(Cidade, date) |>
   dplyr::arrange(desc(n))
@@ -123,7 +122,7 @@ missing_dataagg <- data_thermo |>
 
 # which ones are missing >= 10 hours of data
 too_many_missing <- missing_dataagg |>
-  dplyr::filter(n < x/2) |>
+  dplyr::filter(n < x/3) |>
   dplyr::mutate(LocalTime = paste(Cidade, date, sep = " "))
 
 # remove missing data
@@ -173,7 +172,7 @@ missing <- dataaggfinal |>
 
 # which ones are missing >= 10 hours of data
 too_many_missing <- missing |>
-  dplyr::filter(n >= 10) |>
+  dplyr::filter(n <= 10) |>
   dplyr::mutate(LocalTime = paste(Cidade, datepaste, sep = " "))
 
 

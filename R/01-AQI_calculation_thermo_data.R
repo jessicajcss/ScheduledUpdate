@@ -248,14 +248,7 @@ library(dplyr)
 library(tidyr)
 library(lubridate)
 library(zoo)
-w <- 8
 
-#### reviewed by chatGPT ####
-
-library(dplyr)
-library(tidyr)
-library(lubridate)
-library(zoo)
 
 w <- 8
 air_quality_data <- dataaggfinal %>%
