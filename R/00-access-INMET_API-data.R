@@ -112,6 +112,7 @@ end_date <- Sys.Date()+1
 station_code <- "B806"
 seu_token <- Sys.getenv("INMET_TOKEN")
 
+
 data <- download_data(start_date, end_date, station_code)
 df <- convert_to_df(data)
 
