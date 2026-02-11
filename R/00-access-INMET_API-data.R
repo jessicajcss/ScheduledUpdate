@@ -1,28 +1,25 @@
 ### DOWNLOAD DATA INMET
 # Elaborado por Santos-Silva, J. C.
-## Last update: 2025-03-13
-
-
+## Last update: 2026-02-11
 
 # Refs:
-
 # https://portal.inmet.gov.br/dadoshistoricos/2020.zip
 # https://github.com/wallissoncarvalho/hydrobr/blob/master/hydrobr/get_data.py
 # https://wallissoncarvalho.medium.com/utilizando-a-biblioteca-hydrobr-parte-2-42d54778bf08
 # https://github.com/FilgueirasR/BrazilMet/tree/master/R
-# https://portal.inmet.gov.br/noticias/saiba-como-acessar-os-dados-meteorol%C3%B3gicos-dispon%C3%ADveis-no-site-do-inmet#:~:text=Os%20dados%20coletados%20pelo%20Inmet,inmet.gov.br).
+# https://portal.inmet.gov.br/noticias/saiba-como-acessar-os-dados-meteorol%C3%B3gicos-dispon%C3%ADveis-no-site-do-inmet
 # https://github.com/jdtatsch/inmetr/blob/master/R/bdmep.R
-############################
 
 ## Code based on:
-#>>> https://github.com/JuliaClimate/INMET.jl/blob/master/README.md
-#>> https://discourse.julialang.org/t/ann-inmet-jl/65990/3
-#> https://tempo.inmet.gov.br/TabelaEstacoes/B806
+# https://github.com/JuliaClimate/INMET.jl/blob/master/README.md
+# https://discourse.julialang.org/t/ann-inmet-jl/65990/3
+# https://tempo.inmet.gov.br/TabelaEstacoes/B806
 
+############################
 
 # Function to get INMET token from environment variables
 get_inmet_token <- function() {
-  token <- seu_token
+  token <- Sys.getenv("INMET_TOKEN")
   if (token == "") {
     stop("The INMET API requires a token. Please set the INMET_TOKEN environment variable.")
   }
@@ -30,7 +27,7 @@ get_inmet_token <- function() {
 }
 
 # Function to download and parse data from the INMET API
-download_data <- function(start_date, end_date, station_code, freq = "diaria") {
+download_data <- function(start_date, end_date, station_code, freq = "") {
   token <- get_inmet_token()
 
   # Ensure dates are properly formatted as strings (YYYY-MM-DD)
@@ -47,10 +44,20 @@ download_data <- function(start_date, end_date, station_code, freq = "diaria") {
   }
 
   # Match the Julia INMET.jl URL structure exactly
-  url <- sprintf("https://apitempo.inmet.gov.br/token/estacao/%s/%s/%s/%s/%s",
-                 freq, start_str, end_str, station_code, token)
+  # For hourly data, freq is empty string, for daily use "diaria"
+  if (freq == "") {
+    # Hourly data: no "diaria" in URL
+    url <- sprintf("https://apitempo.inmet.gov.br/token/estacao/%s/%s/%s/%s",
+                   start_str, end_str, station_code, token)
+  } else {
+    # Daily data: includes "diaria"
+    url <- sprintf("https://apitempo.inmet.gov.br/token/estacao/%s/%s/%s/%s/%s",
+                   freq, start_str, end_str, station_code, token)
+  }
 
-  # Add browser-like headers - THIS IS THE KEY FIX!
+  cat("Requesting data from:", start_str, "to", end_str, "\n")
+
+  # Add browser-like headers to avoid 403 errors
   response <- httr::GET(
     url,
     httr::add_headers(
@@ -64,8 +71,7 @@ download_data <- function(start_date, end_date, station_code, freq = "diaria") {
 
   # Check if the request was successful
   if (httr::status_code(response) != 200) {
-    stop(paste("Error:", httr::status_code(response), "-",
-               httr::http_status(response)$message))
+    stop(paste("Error:", httr::status_code(response), "-", httr::http_status(response)$message))
   }
 
   content <- httr::content(response, "text", encoding = "UTF-8")
@@ -86,8 +92,8 @@ download_data <- function(start_date, end_date, station_code, freq = "diaria") {
   return(parsed_json)
 }
 
-
-convert_to_df <- function(data) {
+# Function to convert JSON data to a data frame
+convert_to_df <- function(data, freq = "") {
   if (length(data) == 0) {
     stop("Error: No data available for the given parameters.")
   }
@@ -97,17 +103,28 @@ convert_to_df <- function(data) {
 
   df <- as.data.frame(lapply(data, function(col) sapply(col, as_missing)))
 
-  # Convert numeric columns to numeric types
-  num_cols <- c("VL_LONGITUDE", "VL_LATITUDE", "VL_ALTITUDE",
-                "TEM_INS", "TEM_MIN", "TEM_MAX",
-                "TEMP_MIN", "TEMP_MED", "TEMP_MAX",
-                "UMD_INS", "UMD_MIN", "UMD_MAX",
-                "UMID_MIN", "UMID_MED", "UMID_MAX",
-                "PRE_INS", "PRE_MIN", "PRE_MAX",
-                "VEN_VEL", "VEN_RAJ", "VEN_DIR",
-                "PTO_INS", "PTO_MIN", "PTO_MAX",
-                "RAD_GLO", "CHUVA")
+  # Different variable names for daily (diaria) vs hourly data
+  if (freq == "diaria") {
+    # Daily data variable names
+    num_cols <- c("VL_LONGITUDE", "VL_LATITUDE", "VL_ALTITUDE",
+                  "TEMP_MIN", "TEMP_MED", "TEMP_MAX",
+                  "UMID_MIN", "UMID_MED", "UMID_MAX",
+                  "PRESSAO_MED", "PRESSAO_MIN", "PRESSAO_MAX",
+                  "VEL_VENTO_MED", "RAJADA_MAX", "DIR_VENTO_MED",
+                  "PTO_ORVALHO_MED", "PTO_ORVALHO_MIN", "PTO_ORVALHO_MAX",
+                  "RADIACAO_GLOBAL", "CHUVA")
+  } else {
+    # Hourly data variable names (instantaneous)
+    num_cols <- c("VL_LONGITUDE", "VL_LATITUDE", "VL_ALTITUDE",
+                  "TEM_INS", "TEM_MIN", "TEM_MAX",
+                  "UMD_INS", "UMD_MIN", "UMD_MAX",
+                  "PRE_INS", "PRE_MIN", "PRE_MAX",
+                  "VEN_VEL", "VEN_RAJ", "VEN_DIR",
+                  "PTO_INS", "PTO_MIN", "PTO_MAX",
+                  "RAD_GLO", "CHUVA")
+  }
 
+  # Convert numeric columns to numeric types (only those present in df)
   for (col in num_cols) {
     if (col %in% names(df)) {
       df[[col]] <- as.numeric(df[[col]])
@@ -118,60 +135,81 @@ convert_to_df <- function(data) {
 }
 
 
+############################
+# MAIN WORKFLOW
+############################
+
+# Load previous data
 load(file = "./data/meteo/meteo_colombo.Rda")
 last_meteo_colombo <- meteo_colombo
 rm(meteo_colombo)
 
+# Get the last date from the existing data
 ultima_data <- last_meteo_colombo |>
   dplyr::mutate(date = as.Date(date)) |>
   dplyr::arrange(date) |>
   tail(1) |>
   dplyr::select(date)
 
+# Set parameters for download
+start_date <- as.Date(ultima_data$date)  # Start from last available date
+end_date <- Sys.Date() + 1                # Up to tomorrow
+station_code <- "B806"                    # Colombo station
+freq <- ""                                # HOURLY DATA (use "diaria" for daily)
 
-# Exampledate# Example usage ----
-start_date <- ultima_data$date #"2023-06-01" # máximo de um ano!!
-end_date <- Sys.Date() + 1
-station_code <- "B806"
-seu_token <- Sys.getenv("INMET_TOKEN")
+# Download data
+data <- download_data(start_date, end_date, station_code, freq = freq)
+df <- convert_to_df(data, freq = freq)
 
-
-data <- download_data(start_date, end_date, station_code)
-df <- convert_to_df(data)
-
-
-# Print the first few rows
+# Print the first few rows and available columns
+cat("\nAvailable columns:\n")
+print(names(df))
+cat("\nFirst few rows:\n")
 print(head(df))
 
 
-
-
-
 #########################################################
+### Formatting dataset ----
 #########################################################
-### Formating dataset ----
 
-
+# Map hourly API variables to your standard format
 meteo_colombo <- df |>
-  dplyr::mutate(data = as.Date(DT_MEDICAO),
-         time = sub("00", "", HR_MEDICAO),# sub("(\\d+)(\\d{2})", "\\1:\\2", Hora.Medicao))
-         date = lubridate::ymd_hms(paste0(data," ", time, ":00:00")),
-         uv = NA) |>
-  dplyr::select(DC_NOME, date, TEM_INS, VEN_VEL, VEN_DIR, CHUVA, UMD_INS, RAD_GLO, PRE_INS, uv)
+  dplyr::mutate(
+    data = as.Date(DT_MEDICAO),
+    time = sub("00$", "", HR_MEDICAO),    # Remove trailing "00" from hour
+    date = lubridate::ymd_hms(paste0(data, " ", time, ":00:00")),
+    temp = TEM_INS,                       # Instantaneous temperature
+    ws = VEN_VEL,                         # Wind speed
+    wd = VEN_DIR,                         # Wind direction
+    prec = CHUVA,                         # Precipitation
+    umid = UMD_INS,                       # Instantaneous humidity
+    rad = ifelse("RAD_GLO" %in% names(df), RAD_GLO, NA),  # Solar radiation
+    press = ifelse("PRE_INS" %in% names(df), PRE_INS, NA),  # Instantaneous pressure
+    uv = NA,                              # UV not available
+    Cidade = "Colombo"
+  ) |>
+  dplyr::select(Cidade, date, temp, ws, wd, prec, umid, rad, press, uv)
 
-colnames(meteo_colombo) <- c('Cidade', 'date', 'temp', 'ws', 'wd', 'prec', 'umid', 'rad', 'press', 'uv')
-
+# Ensure proper timezone handling
 meteo_colombo <- meteo_colombo |>
   dplyr::mutate(date = lubridate::with_tz(date, tz = "America/Chicago")) |>
   dplyr::mutate(date = lubridate::force_tz(date, tz = "America/Sao_Paulo")) |>
-  dplyr::mutate(Cidade = "Colombo",
-         across(c(temp, ws, wd, prec, umid, rad, press, uv), as.numeric))
+  dplyr::mutate(
+    Cidade = "Colombo",
+    across(c(temp, ws, wd, prec, umid, rad, press, uv), as.numeric)
+  )
 
+# Combine with historical data and clean
 meteo_colombo <- rbind(meteo_colombo, last_meteo_colombo) |>
   dplyr::arrange(date) |>
   unique() |>
   subset(!is.na(temp))
 
+# Save updated data
 save(meteo_colombo, file = "./data/meteo/meteo_colombo.Rda")
 
+cat("\n=== Data successfully downloaded and saved! ===\n")
+cat("Total records:", nrow(meteo_colombo), "\n")
+cat("Date range:", as.character(min(meteo_colombo$date)), "to", as.character(max(meteo_colombo$date)), "\n")
+cat("Variables:", paste(names(meteo_colombo), collapse=", "), "\n")
 
