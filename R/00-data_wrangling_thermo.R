@@ -81,6 +81,7 @@ data_thermo <- data_thermo |>
 
 data_thermo <- data_thermo |>
   dplyr::group_by(Cidade) |>
+  dplyr::rename('SO2' = so2, 'NO2' = no2, 'O3' = o3, 'CO' = co, 'PM2.5' = pm2p5, 'PM10' = pm10) |>
   remove_outlier(c('SO2', 'NO2', 'O3', 'CO', 'PM2.5', 'PM10')) |>
   dplyr::group_by(Cidade) # Reaplicar agrupamento após a remoção dos outliers, se necessário
 
