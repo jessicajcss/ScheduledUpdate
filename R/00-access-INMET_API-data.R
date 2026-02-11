@@ -30,7 +30,6 @@ get_inmet_token <- function() {
 }
 
 # Function to download and parse data from the INMET API
-# Function to download and parse data from the INMET API
 download_data <- function(start_date, end_date, station_code, freq = "diaria") {
   token <- get_inmet_token()
 
@@ -88,6 +87,35 @@ download_data <- function(start_date, end_date, station_code, freq = "diaria") {
 }
 
 
+convert_to_df <- function(data) {
+  if (length(data) == 0) {
+    stop("Error: No data available for the given parameters.")
+  }
+
+  # Replace NULL values with NA
+  as_missing <- function(v) ifelse(is.null(v), NA, v)
+
+  df <- as.data.frame(lapply(data, function(col) sapply(col, as_missing)))
+
+  # Convert numeric columns to numeric types
+  num_cols <- c("VL_LONGITUDE", "VL_LATITUDE", "VL_ALTITUDE",
+                "TEM_INS", "TEM_MIN", "TEM_MAX",
+                "TEMP_MIN", "TEMP_MED", "TEMP_MAX",
+                "UMD_INS", "UMD_MIN", "UMD_MAX",
+                "UMID_MIN", "UMID_MED", "UMID_MAX",
+                "PRE_INS", "PRE_MIN", "PRE_MAX",
+                "VEN_VEL", "VEN_RAJ", "VEN_DIR",
+                "PTO_INS", "PTO_MIN", "PTO_MAX",
+                "RAD_GLO", "CHUVA")
+
+  for (col in num_cols) {
+    if (col %in% names(df)) {
+      df[[col]] <- as.numeric(df[[col]])
+    }
+  }
+
+  return(df)
+}
 
 
 load(file = "./data/meteo/meteo_colombo.Rda")
