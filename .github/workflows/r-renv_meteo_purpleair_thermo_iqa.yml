@@ -61,10 +61,10 @@ jobs:
           source("R/00-access-plugfield-data.R")
         shell: Rscript {0}
 
-      - name: Execute Script
-        run: |
-          source("R/00-access-purpleair-data.R")
-        shell: Rscript {0}
+      #- name: Execute Script - reactivate if new purpleair data
+       # run: |
+        #  source("R/00-access-purpleair-data.R")
+        #shell: Rscript {0}
 
       - name: Execute Script
         run: |

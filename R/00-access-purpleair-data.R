@@ -243,9 +243,9 @@ save(data_purpleair_instantaneo, file = "./data/data_purpleair_instantaneo.Rda")
 
 
 
-# Matching thermo data X legislation - reactivate if new data
+# Matching thermo data X legislation
 
-#data_purpleair_new <- data_purpleair   %>%
+data_purpleair_new <- data_purpleair   %>%
   dplyr::mutate(PM2.5 = ifelse(PM2.5 < -100, NA, PM2.5))  %>%
   dplyr::mutate(PM2.5 = ifelse(PM2.5 < -0, 0, PM2.5)) %>%
   select(Cidade, Tipo, sensor_id, date, PM2.5) %>%
