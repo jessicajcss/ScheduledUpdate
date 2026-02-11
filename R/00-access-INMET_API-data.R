@@ -30,16 +30,43 @@ get_inmet_token <- function() {
 }
 
 # Function to download and parse data from the INMET API
-download_data <- function(start_date, end_date, station_code) {
+# Function to download and parse data from the INMET API
+download_data <- function(start_date, end_date, station_code, freq = "diaria") {
   token <- get_inmet_token()
-  url <- sprintf("https://apitempo.inmet.gov.br/token/estacao/%s/%s/%s/%s",
-                 start_date, end_date, station_code, token)
 
-  response <- httr::GET(url)
+  # Ensure dates are properly formatted as strings (YYYY-MM-DD)
+  start_str <- if (inherits(start_date, "Date")) {
+    format(start_date, "%Y-%m-%d")
+  } else {
+    as.character(start_date)
+  }
+
+  end_str <- if (inherits(end_date, "Date")) {
+    format(end_date, "%Y-%m-%d")
+  } else {
+    as.character(end_date)
+  }
+
+  # Match the Julia INMET.jl URL structure exactly
+  url <- sprintf("https://apitempo.inmet.gov.br/token/estacao/%s/%s/%s/%s/%s",
+                 freq, start_str, end_str, station_code, token)
+
+  # Add browser-like headers - THIS IS THE KEY FIX!
+  response <- httr::GET(
+    url,
+    httr::add_headers(
+      `User-Agent` = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+      `Accept` = "application/json, text/plain, */*",
+      `Accept-Language` = "en-US,en;q=0.9,pt-BR;q=0.8,pt;q=0.7",
+      `Accept-Encoding` = "gzip, deflate, br"
+    ),
+    httr::timeout(60)
+  )
 
   # Check if the request was successful
   if (httr::status_code(response) != 200) {
-    stop(paste("Error:", httr::status_code(response), "-", httr::http_status(response)$message))
+    stop(paste("Error:", httr::status_code(response), "-",
+               httr::http_status(response)$message))
   }
 
   content <- httr::content(response, "text", encoding = "UTF-8")
@@ -60,38 +87,6 @@ download_data <- function(start_date, end_date, station_code) {
   return(parsed_json)
 }
 
-# Function to convert JSON data to a data frame
-convert_to_df <- function(data) {
-  if (length(data) == 0) {
-    stop("Error: No data available for the given parameters.")
-  }
-
-  # Replace NULL values with NA
-  as_missing <- function(v) ifelse(is.null(v), NA, v)
-
-  df <- as.data.frame(lapply(data, function(col) sapply(col, as_missing)))
-
-  # Convert numeric columns to numeric types
-  num_cols <- c("VL_LONGITUDE", "VL_LATITUDE", "VL_ALTITUDE",
-                "TEM_INS", "TEM_MIN", "TEM_MAX",
-                "TEMP_MIN", "TEMP_MED", "TEMP_MAX",
-                "UMD_INS", "UMD_MIN", "UMD_MAX",
-                "UMID_MIN", "UMID_MED", "UMID_MAX",
-                "PRE_INS", "PRE_MIN", "PRE_MAX",
-                "VEN_VEL", "VEN_RAJ", "VEN_DIR",
-                "PTO_INS", "PTO_MIN", "PTO_MAX",
-                "RAD_GLO", "CHUVA")
-
-  for (col in num_cols) {
-    if (col %in% names(df)) {
-      df[[col]] <- as.numeric(df[[col]])
-    }
-  }
-
-  return(df)
-}
-
-
 
 
 
@@ -108,7 +103,7 @@ ultima_data <- last_meteo_colombo |>
 
 # Exampledate# Example usage ----
 start_date <- ultima_data$date #"2023-06-01" # máximo de um ano!!
-end_date <- Sys.Date()+1
+end_date <- Sys.Date() + 1
 station_code <- "B806"
 seu_token <- Sys.getenv("INMET_TOKEN")
 
